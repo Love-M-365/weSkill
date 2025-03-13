@@ -1,10 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react';
 import background from './photos/brad-neathery-nPy0X4xew60-unsplash.jpg';
-import image1 from './photos/carl-heyerdahl-KE0nC8-58MQ-unsplash.jpg';
-import image2 from './photos/simon-abrams-k_T9Zj3SE8k-unsplash.jpg';
-import image3 from './photos/ian-schneider-TamMbr4okv4-unsplash.jpg';
+import image1 from './photos/image1.jpg';
+import image2 from './photos/FeatureNetworking.jpg';
+import image3 from './photos/FeatureNotify.jpg';
+import image4 from './photos/FeatureLeaderboard.jpg';
 import { Link } from 'react-router-dom';
 import Navbar from './Navbar';
+import weskill from './photos/we skill.png'
+
 
 export default function Homepage() {
   const [activeSection, setActiveSection] = useState('#home');
@@ -100,40 +103,42 @@ export default function Homepage() {
             height: '100vh',
             margin: '0.5rem',
             borderRadius: '1rem',
+            backgroundSize:"cover",
+            backgroundRepeat:"no-repeat",
+            textAlign:"left"
           
           }}
         >
           <h1
             style={{
               fontFamily: 'BankGothic Lt BT',
-              fontSize: '3rem',
-              paddingTop: '10rem',
+              fontSize: '3.7rem',
+              paddingTop: '5rem',
             }}
-            className="text-center text-white"
+            className="m-3 text-white"
           >
             Welcome to We Skill
           </h1>
+          <h3 style={{fontFamily:"BankGothic Lt BT",color:"#98fb98",marginLeft:"8rem"}}>Turning hobbies into Hustles</h3>
+          <img src={weskill} style={{maxHeight:"15rem",maxWidth:"15rem",marginLeft:"14rem"}}></img>
           <div
             style={{
               height: '18rem',
               width: '30rem',
-              marginLeft: '50%',
-              transform: 'translateX(-50%)',
+               
               fontSize: '1.2rem',
             }}
           >
-            <div className="card-body">
+            <div className="card-body m-3" >
               <p
                 className="card-text"
                 style={{
                   fontFamily: 'Swis721 Ex BT',
+                  color:"#fffacd",
+                  fontSize:"1.1rem"
                 }}
               >
-                An innovative platform designed to bridge the gap between service seekers and
-                talented individuals offering professional skills. Whether you're a creative
-                professional, a tech enthusiast, or someone with a unique talent, SkillConnect
-                empowers you to monetize your skills by connecting you with those who need your
-                services.
+              Bridging the gap between talent and opportunity. Whether you're a freelancer ready to showcase your skills or a job provider seeking the best, WeSkill makes connections effortless and efficient. Because great work deserves to be found – and paid for!
               </p>
             </div>
           </div>
@@ -151,40 +156,55 @@ export default function Homepage() {
             style={{ width: '100%' }}
           >
             <div className="carousel-inner">
-              <div className="carousel-item active">
+              <div className="carousel-item active" style={{backgroundColor:"black"}}>
                 <img
                   src={image1}
                   className="d-block w-100"
                   alt="..."
-                  style={{ opacity: '0.5' }}
+                  style={{ opacity: '0.5', maxHeight:"80rem",maxWidth:"100rem"}}
+                  
                 />
                 <div className="carousel-caption d-none d-md-block">
-                  <h5>First slide label</h5>
-                  <p>Some representative placeholder content for the first slide.</p>
+                  <h1>AI-Powered Recommendations</h1>
+                  <p style={{fontSize:"1.2rem"}}>Smart matching of freelancers and job providers based based on skills, project needs, and sentiment analysis from reviews.</p>
                 </div>
               </div>
-              <div className="carousel-item">
+              <div className="carousel-item" style={{backgroundColor:"black"}}>
                 <img
                   src={image2}
                   className="d-block w-100"
                   alt="..."
-                  style={{ opacity: '0.5' }}
+                  style={{ opacity: '0.5',maxHeight:"80rem",maxWidth:"100rem" }}
                 />
                 <div className="carousel-caption d-none d-md-block">
-                  <h5>Second slide label</h5>
-                  <p>Some representative placeholder content for the second slide.</p>
+                  <h1>Sentiment-Based Badges</h1>
+                  <p  style={{fontSize:"1.2rem"}}>Freelancers earn badges like "Highly Reliable" or "Consistent Performer," making it easier for job providers to identify top talent.</p>
                 </div>
               </div>
-              <div className="carousel-item">
+               <div className="carousel-item" style={{backgroundColor:"black"}}>
                 <img
                   src={image3}
                   className="d-block w-100"
                   alt="..."
-                  style={{ opacity: '0.5' }}
+                  style={{ opacity: '0.5',maxHeight:"80rem",maxWidth:"100rem" }}
                 />
                 <div className="carousel-caption d-none d-md-block">
-                  <h5>Third slide label</h5>
-                  <p>Some representative placeholder content for the third slide.</p>
+                  <h1>Real-Time Communication & Notifications</h1>
+                  <p  style={{fontSize:"1.2rem"}}>In-app chat, file sharing, and instant alerts for bids, messages, and project updates to keep the workflow smooth.
+</p>
+                </div>
+              </div>
+              <div className="carousel-item" style={{backgroundColor:"black"}}>
+                <img
+                  src={image4}
+                  className="d-block w-100"
+                  alt="..."
+                  style={{ opacity: '0.5',maxHeight:"80rem",maxWidth:"100rem" }}
+                />
+                <div className="carousel-caption d-none d-md-block">
+                  <h1>Verified Profiles & Leaderboards</h1>
+                  <p  style={{fontSize:"1.2rem"}}>ID verification for authenticity and leaderboards showcasing top-rated freelancers and active job providers for added trust and visibility.
+</p>
                 </div>
               </div>
             </div>

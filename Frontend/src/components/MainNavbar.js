@@ -1,7 +1,30 @@
-import React from 'react';
-import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { Navbar, Nav, Container, NavDropdown, Button } from 'react-bootstrap';
+import { Bell } from 'react-bootstrap-icons';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate from react-router-dom
 
 const WeSkillNavbar = () => {
+  const [profileCreated, setProfileCreated] = useState(false); // default state is false
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Check if the profile is already created, you can replace this with an actual API call
+    const userProfile = localStorage.getItem("userProfile"); // for example, using localStorage to check if profile exists
+    if (userProfile) {
+      setProfileCreated(true); // If user profile exists, set the state to true
+    }
+  }, []);
+
+  const handleJobSeekerButtonClick = () => {
+    if (profileCreated) {
+      // Redirect to the profile page if profile exists
+      navigate("/profile");
+    } else {
+      // Open the questionnaire if profile does not exist
+      navigate("/questionnaire"); // or open the questionnaire modal
+    }
+  };
+
   return (
     <Navbar bg="dark" variant="dark" expand="lg" className="shadow-sm">
       <Container>
@@ -10,12 +33,31 @@ const WeSkillNavbar = () => {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link href="#dashboard">Dashboard</Nav.Link>
-            <Nav.Link href="#explore">Explore Projects</Nav.Link>
+            <Nav.Link href="#showcase">My Orders</Nav.Link>
             <Nav.Link href="#community">Community</Nav.Link>
-            <Nav.Link href="#showcase">Showcase Skills</Nav.Link>
+            <Nav.Link href="#showcase">Support</Nav.Link>
           </Nav>
-          <Nav>
-            <NavDropdown title="Profile" id="basic-nav-dropdown">
+          <Nav className="align-items-center">
+            {/* Notification Icon */}
+            <Nav.Link href="#notifications">
+              <Bell size={20} className="text-light me-3" />
+            </Nav.Link>
+
+            {/* Job Seeker Button */}
+            <Button 
+              onClick={handleJobSeekerButtonClick} // Handle the button click
+              style={{
+                backgroundColor: '#28a745',
+                border: 'none',
+                borderRadius: '25px',
+                padding: '6px 20px',
+                boxShadow: '0 0 8px #28a745'
+              }}
+            >
+              {profileCreated ? "Back to main Dashboard" : "Job Seeker"}
+            </Button>
+
+            <NavDropdown title="Profile" id="basic-nav-dropdown" className="ms-3">
               <NavDropdown.Item href="#view-profile">View Profile</NavDropdown.Item>
               <NavDropdown.Item href="#settings">Settings</NavDropdown.Item>
               <NavDropdown.Divider />

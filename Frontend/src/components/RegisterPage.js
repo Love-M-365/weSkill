@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from './Navbar';
+import weskill from './photos/we skill.png'
 
 export default function RegisterPage() {
   const [step, setStep] = useState(1);
@@ -62,106 +63,111 @@ export default function RegisterPage() {
   return (
     <div>
       <Navbar></Navbar>
-    <div className="container mt-5">
-      <div className="card p-4">
-        <h2 className="text-center mb-4">Register for WeSkill</h2>
+    <div className="container mt-5" >
+      <div className="card p-4" style={{background: "linear-gradient(to right, #D4FDD9, #A8D0F0)"
+}}>
+       
+        <h2 className="text-center mb-4"> <img src={weskill} style={{maxHeight:"10rem",maxWidth:"30rem",marginBottom:"2rem"}}></img><br></br>Register</h2>
         <form onSubmit={handleSubmit}>
           {step === 1 && (
-            <div>
+            <div className="container">
+    <div className="row g-3">
+        <div className="col-sm-6 col-12">
+            <label className="form-label">Name</label>
+            <input
+                type="text"
+                className="form-control"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+            />
+        </div>
+        <div className="col-sm-6 col-12">
+            <label className="form-label">Age</label>
+            <input
+                type="number"
+                className="form-control"
+                name="age"
+                value={formData.age}
+                onChange={handleChange}
+                required
+            />
+        </div>
+        <div className="col-sm-6 col-12">
+            <label className="form-label">Phone Number</label>
+            <input
+                type="tel"
+                className="form-control"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                required
+            />
+        </div>
+        <div className="col-sm-6 col-12">
+            <label className="form-label">Gender</label>
+            <select
+                className="form-select"
+                name="gender"
+                value={formData.gender}
+                onChange={handleChange}
+                required
+            >
+                <option value="">Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+        <div className="col-sm-6 col-12">
+            <label className="form-label">Email</label>
+            <input
+                type="email"
+                className="form-control"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+            />
+        </div>
+        <div className="col-sm-6 col-12">
+            <label className="form-label">Password</label>
+            <input
+                type="password"
+                className="form-control"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+            />
+        </div>
         
-              <div className="mb-3">
-                <label className="form-label">Name</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">Age</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  name="age"
-                  value={formData.age}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">Gender</label>
-                <select
-                  className="form-select"
-                  name="gender"
-                  value={formData.gender}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Select Gender</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                  <option value="other">Other</option>
-                </select>
-              </div>
-              <div className="mb-3">
-                <label className="form-label">Email</label>
-                <input
-                  type="email"
-                  className="form-control"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">Password</label>
-                <input
-                  type="password"
-                  className="form-control"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">Confirm Password</label>
-                <input
-                  type="password"
-                  className="form-control"
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">City</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="city"
-                  value={formData.city}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">Country</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="country"
-                  value={formData.country}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-            </div>
+        <div className="col-sm-6 col-12">
+            <label className="form-label">City</label>
+            <input
+                type="text"
+                className="form-control"
+                name="city"
+                value={formData.city}
+                onChange={handleChange}
+                required
+            />
+        </div>
+        <div className="col-sm-6 col-12">
+            <label className="form-label">Country</label>
+            <input
+                type="text"
+                className="form-control"
+                name="country"
+                value={formData.country}
+                onChange={handleChange}
+                required
+            />
+        </div>
+    </div>
+</div>
+
           )}
 
           {step === 2 && (
