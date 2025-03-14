@@ -58,7 +58,7 @@ const TaskList = () => {
                     <Link to={`/profile/${profile.name}`} className="btn btn-info w-48">
                       View Profile
                     </Link>
-                    <Button className="btn btn-success w-48">Hire</Button>
+                    
                   </div>
                 </CardContent>
               </Card>

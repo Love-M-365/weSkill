@@ -26,26 +26,35 @@ const questions = [
     ]
   },
   {
-    question: "What framework would you like to use for Web Development?",
+    question: "What type of website do you need?",
     options: [
-      { label: "React" },
-      { label: "Angular" },
-      { label: "Vue" }
+      { label: " Portfolio Website" },
+      { label: "E-commerce Store" },
+      { label: "Business Website" },
+      { label: "Blog" },
+      { label: "Custom Web Application" },
+      { label: "Other" }
+
+    ]
+  },
+  
+  {
+    question: "Technology Preference",
+    options: [
+      { label: "HTML, CSS, JavaScript" },
+      { label: "React, Vue.js, Angular" },
+      { label: "WordPress, Shopify, Wix" },
+      { label: "Full-stack (Node.js, Express, MongoDB, SQL)" },
+      { label: "No preference, need expert recommendation" }
     ]
   },
   {
-    question: "What is your preferred database for the Web Development project?",
+    question: "Additional Services",
     options: [
-      { label: "MongoDB" },
-      { label: "MySQL" },
-      { label: "PostgreSQL" }
-    ]
-  },
-  {
-    question: "Would you like to integrate any additional technologies?",
-    options: [
-      { label: "Node.js" },
-      { label: "Express.js" },
+      { label: "Responsive Design" },
+      { label: "Website Optimization (Speed, SEO, Security)" },
+      { label: "Website Optimization (Speed, SEO, Security)" },
+      { label: "Payment Gateway Setup" },
       { label: "Other" }
     ]
   }
@@ -70,7 +79,7 @@ const Questionnaire = () => {
       setCurrentQuestion(currentQuestion + 1);
     } else {
       console.log('User Responses:', answers);
-      navigate('/taskList');
+      navigate('/profiles');
     }
   };
 
@@ -134,7 +143,7 @@ const Questionnaire = () => {
                         <div
                           key={index}
                           className={`option-card p-3 rounded-3 text-center ${selectedOption === option.label ? 'border border-primary shadow' : 'border'}`}
-                          style={{ width: '150px', cursor: 'pointer' }}
+                          style={{ width: '20rem', cursor: 'pointer' }}
                           onClick={() => setSelectedOption(option.label)}
                         >
                           <div>{option.label}</div>

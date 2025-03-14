@@ -14,6 +14,10 @@ import ProfileDetails from './components/ProfileDetails';
 import TaskList from './components/TaskList';
 import Questionnaire from './components/AiQuestions';
 import QuestionnairePage from './components/JobSeekerQ';
+import MyOrders from './components/MyOrders';
+import PostWorkPage from './components/Postwork';
+import JobSeekerProfile from './components/JobSeekerOrdersPage';
+import PaymentPage from './components/PaymentPage';
 
 const App = () => {
   return (
@@ -31,6 +35,10 @@ const App = () => {
           <Route path="/taskList" element={<TaskList />} />
           <Route path="/aiquestions" element={<Questionnaire />} />
           <Route path="/questionnaire" element={<QuestionnairePage />} />
+          <Route path="/myorders" element={<MyOrders />} />
+          <Route path="/postwork" element={<PostWorkPage />} />
+          <Route path="/jobseekerorderspage" element={<JobSeekerProfile />} />
+          <Route path="/paymentpage" element={<PaymentPage />} />
           
           
 

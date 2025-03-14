@@ -2,15 +2,25 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FaStar, FaBriefcase, FaComment, FaTags, FaUser } from 'react-icons/fa';
 import WeSkillNavbar from './MainNavbar';
+import image1 from "./photos/react.jpg";
 
 const ProfilesPage = () => {
+    const sampleProfiles = [{ 
+        name: "Web Development", 
+        image: image1, 
+        description: "Develop websites and web applications", 
+        profiles: [
+            { name: "Rajesh Kumar", rating: 4.8, worksDone: 120, topComment: "Great work!", tags: ['ReactJS', 'Frontend', 'Web Developer'], description: "Expert in creating dynamic and responsive web applications." },
+            { name: "Anjali Mehta", rating: 4.5, worksDone: 95, topComment: "Very professional!", tags: ['VueJS', 'JavaScript', 'Frontend Developer'], description: "Specialized in building user-friendly and interactive web designs." }
+        ]
+    }];
+
     const location = useLocation();
     const navigate = useNavigate();
     const { selectedField } = location.state || {};
 
-    if (!selectedField) {
-        return <p>No profiles available.</p>;
-    }
+    // Use sample profiles if no profiles are available
+    const profilesToDisplay = selectedField?.profiles?.length ? selectedField.profiles : sampleProfiles[0].profiles;
 
     const handleProfileClick = (profile) => {
         navigate('/profile-details', { state: { profile } });
@@ -20,24 +30,26 @@ const ProfilesPage = () => {
         <>
         <WeSkillNavbar />
         <div className="container my-5">
-            <h2 className="mb-4">{selectedField.name} Profiles</h2>
-            <p>{selectedField.description}</p>
+            <h2 className="mb-4">{selectedField?.name || "Profiles you need"}</h2>
+            <p>{selectedField?.description || "Explore some sample profiles to get started."}</p>
 
             <div>
-                {selectedField.profiles.map((profile, index) => (
+                {profilesToDisplay.map((profile, index) => (
                     <div 
                         className="card shadow-sm p-3 mb-3 profile-card" 
                         key={index} 
                         onClick={() => handleProfileClick(profile)}
                     >
                         <div className="d-flex align-items-center">
-                            {/* Profile Picture Placeholder */}
                             <div className="profile-pic me-3">
                                 <FaUser className="text-white" size={40} />
                             </div>
 
                             <div className="flex-grow-1">
                                 <h5 className="mb-1">{profile.name}</h5>
+                                <p className="text-muted mb-2" style={{ fontStyle: "italic" }}>
+                                    {profile.description || "No description available"}
+                                </p>
                                 <div className="d-flex align-items-center text-muted mb-2">
                                     <FaStar className="text-warning me-1" size={18} />
                                     <span className="me-3">{profile.rating}</span>

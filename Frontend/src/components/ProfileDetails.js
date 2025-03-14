@@ -1,4 +1,4 @@
-import React from 'react';
+import {React ,useState} from 'react';
 import { useLocation } from 'react-router-dom';
 import { FaStar, FaBriefcase, FaClock, FaCheckCircle, FaUser } from 'react-icons/fa';
 import { Button } from 'react-bootstrap';
@@ -7,7 +7,17 @@ import TaskCard from './taskCard';
 import pw from './photos/pw.jpg'
 import commerce from './photos/commerce.jpg'
 import sm from './photos/sm.jpg'
+import Toast from './ToastMessage';
+
 const ProfileDetails = () => {
+    const [toast, setToast] = useState(null);
+
+
+    const showToast = (type, message) => {
+        setToast({ type, message });
+        setTimeout(() => setToast(null), 3000);
+    };
+
     const location = useLocation();
     const { profile } = location.state || {};
 
@@ -49,7 +59,7 @@ const ProfileDetails = () => {
         <>
             <WeSkillNavbar />
             <div className="container my-5">
-
+            {toast && <Toast type={toast.type} message={toast.message} onClose={() => setToast(null)} />}
                 {/* Profile Details */}
                 <div className="card border-0 p-4 mb-4 shadow-sm">
                     <div className="d-flex align-items-center mb-4">
@@ -97,7 +107,8 @@ const ProfileDetails = () => {
                                 <Button
                                     variant="primary"
                                     className="w-100"
-                                    onClick={() => alert(`Proceeding to payment for ${plan.level} plan`)}
+                                    
+                                    onClick={() => showToast('success', 'payment successfull , check your order in My orders tab !')}
                                 >
                                     Proceed to Pay
                                 </Button>

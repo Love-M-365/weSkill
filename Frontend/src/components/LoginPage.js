@@ -59,7 +59,7 @@ export default function LoginPage() {
               </form>
               <div className="text-center mt-3">
                 <p className="small">
-                  Already have an account?{' '}
+                  Don't have an account ?{' '}
                   <a href="/login" className="text-decoration-none">
                     Register here
                   </a>

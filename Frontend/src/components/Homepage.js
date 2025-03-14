@@ -6,7 +6,7 @@ import image3 from './photos/FeatureNotify.jpg';
 import image4 from './photos/FeatureLeaderboard.jpg';
 import { Link } from 'react-router-dom';
 import Navbar from './Navbar';
-import weskill from './photos/we skill.png'
+import weskill from './photos/weskillremovedbg.png'
 
 
 export default function Homepage() {
@@ -41,7 +41,7 @@ export default function Homepage() {
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
         <div className="container-fluid">
           <a className="navbar-brand" href="#">
-            weSkill
+          <img src={weskill} style={{maxHeight:"3rem",maxWidth:"3rem"}}></img>
           </a>
           <button
             className="navbar-toggler"
@@ -106,7 +106,6 @@ export default function Homepage() {
             backgroundSize:"cover",
             backgroundRepeat:"no-repeat",
             textAlign:"left"
-          
           }}
         >
           <h1
@@ -117,10 +116,10 @@ export default function Homepage() {
             }}
             className="m-3 text-white"
           >
-            Welcome to We Skill
+            Welcome to weSkill
           </h1>
           <h3 style={{fontFamily:"BankGothic Lt BT",color:"#98fb98",marginLeft:"8rem"}}>Turning hobbies into Hustles</h3>
-          <img src={weskill} style={{maxHeight:"15rem",maxWidth:"15rem",marginLeft:"14rem"}}></img>
+          
           <div
             style={{
               height: '18rem',
@@ -143,7 +142,6 @@ export default function Homepage() {
             </div>
           </div>
         </section>
-
         <section
           ref={(el) => (sections.current['#features'] = el)}
           id="features"
@@ -237,7 +235,6 @@ export default function Homepage() {
           <h2 className="display-4">About Us</h2>
           <p className="lead">Learn more about us and what we do.</p>
         </section>
-
         <section
           id="contact"
           className="min-vh-100 bg-white d-flex flex-column justify-content-center align-items-center text-center"
@@ -248,7 +245,7 @@ export default function Homepage() {
       </main>
 
       <footer className="bg-dark text-white py-4 text-center">
-        <p>&copy; 2025 SkillConnect. All rights reserved.</p>
+        <p>&copy; 2025 weSkill. All rights reserved.</p>
       </footer>
     </div>
    

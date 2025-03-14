@@ -19,16 +19,16 @@ import { useNavigate } from 'react-router-dom';
 
 const workFields = [
     { name: "Web Development", image: image1, description: "Develop websites and web applications", profiles: [
-        { name: "Rajesh Kumar", rating: 4.8, worksDone: 120, topComment: "Great work!", tags: ['ReactJS', 'Frontend', 'Web Developer'] },
-        { name: "Anjali Mehta", rating: 4.5, worksDone: 95, topComment: "Very professional!", tags: ['VueJS', 'JavaScript', 'Frontend Developer'] }
+        { name: "Rajesh Kumar", rating: 4.8, worksDone: 120, topComment: "Great work!", tags: ['ReactJS', 'Frontend', 'Web Developer'], description: "Expert in creating dynamic and responsive web applications." },
+        { name: "Anjali Mehta", rating: 4.5, worksDone: 95, topComment: "Very professional!", tags: ['VueJS', 'JavaScript', 'Frontend Developer'], description: "Specialized in building user-friendly and interactive web designs." }
     ]},
     { name: "Graphic Design", image: image2, description: "Create visual concepts and designs", profiles: [
-        { name: "Vikram Singh", rating: 4.7, worksDone: 200, topComment: "Outstanding designs!", tags: ['Photoshop', 'Illustrator', 'Graphic Designer'] },
-        { name: "Pooja Sharma", rating: 4.6, worksDone: 150, topComment: "Creative and detail-oriented.", tags: ['Figma', 'Branding', 'Graphic Designer'] }
+        { name: "Vikram Singh", rating: 4.7, worksDone: 200, topComment: "Outstanding designs!", tags: ['Photoshop', 'Illustrator', 'Graphic Designer'], description: "Known for innovative and trend-setting graphic designs." },
+        { name: "Pooja Sharma", rating: 4.6, worksDone: 150, topComment: "Creative and detail-oriented.", tags: ['Figma', 'Branding', 'Graphic Designer'], description: "Excels at designing brand identities and marketing materials." }
     ]},
     { name: "Content Writing", image: image3, description: "Write blogs, articles, and content for websites", profiles: [
-        { name: "Rohit Verma", rating: 4.9, worksDone: 100, topComment: "Great writing skills.", tags: ['SEO', 'Content Writer', 'Blogger'] },
-        { name: "Megha Kapoor", rating: 4.4, worksDone: 80, topComment: "Engaging content!", tags: ['Copywriting', 'Blogging', 'Content Creator'] }
+        { name: "Rohit Verma", rating: 4.9, worksDone: 100, topComment: "Great writing skills.", tags: ['SEO', 'Content Writer', 'Blogger'], description: "Skilled in producing high-quality and SEO-optimized content." },
+        { name: "Megha Kapoor", rating: 4.4, worksDone: 80, topComment: "Engaging content!", tags: ['Copywriting', 'Blogging', 'Content Creator'], description: "Expert in creating persuasive and creative content." }
     ]},
     { name: "Video Editing", image: image4, description: "Edit and produce professional videos", profiles: [
         { name: "Rohan Sharma", rating: 4.8, worksDone: 90, topComment: "Amazing transitions!", tags: ['Premiere Pro', 'After Effects', 'Video Editor'] },
@@ -77,7 +77,7 @@ const Dashboard = () => {
     const filteredFields = workFields.filter(field =>
         field.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    const navigate = useNavigate(); // Use navigate for page redirection
+    const navigate = useNavigate(); 
 
     const handleCardClick = (field) => {
         navigate('/profiles', { state: { selectedField: field } });
@@ -144,29 +144,33 @@ const Dashboard = () => {
 
                             {/* Profile List (Vertical Layout) */}
                             <h5>Profiles in {selectedField.name}:</h5>
-                            <div>
-                                {selectedField.profiles.map((profile, index) => (
-                                    <div className="card text-start p-3 shadow-sm mb-3" key={index} style={{ width: "100%" }}>
-                                        <div className="card-body">
-                                            <div className="d-flex align-items-center mb-3">
-                                                <FaUser className="me-2 text-primary" size={24} />
-                                                <h6>{profile.name}</h6>
-                                            </div>
-                                            <div className="d-flex justify-content-between mb-2">
-                                                <div><FaStar className="text-warning me-1" size={20} /> {profile.rating}</div>
-                                                <div><FaBriefcase className="text-success me-1" size={20} /> {profile.worksDone} Works</div>
-                                            </div>
-                                            <div className="mb-2"><FaComment className="text-info me-1" size={20} /> {profile.topComment}</div>
-                                            <div className="d-flex flex-wrap">
-                                                <FaTags className="text-secondary me-2" size={20} />
-                                                {profile.tags.map((tag, i) => (
-                                                    <span key={i} className="badge bg-primary me-2 mb-1">{tag}</span>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
+<div>
+    {selectedField.profiles.map((profile, index) => (
+        <div className="card text-start p-3 shadow-sm mb-3" key={index} style={{ width: "100%" }}>
+            <div className="card-body">
+                <div className="d-flex align-items-center mb-3">
+                    <FaUser className="me-2 text-primary" size={24} />
+                    <h6 className="m-0">{profile.name}</h6>
+                </div>
+
+                <p className="text-muted mb-3">{profile.description}</p>
+
+                <div className="d-flex justify-content-between mb-2">
+                    <div><FaStar className="text-warning me-1" size={20} /> {profile.rating}</div>
+                    <div><FaBriefcase className="text-success me-1" size={20} /> {profile.worksDone} Works</div>
+                </div>
+                <div className="mb-2"><FaComment className="text-info me-1" size={20} /> {profile.topComment}</div>
+                <div className="d-flex flex-wrap">
+                    <FaTags className="text-secondary me-2" size={20} />
+                    {profile.tags.map((tag, i) => (
+                        <span key={i} className="badge bg-primary me-2 mb-1">{tag}</span>
+                    ))}
+                </div>
+            </div>
+        </div>
+    ))}
+</div>
+
                         </Modal.Body>
                         <Modal.Footer>
                             <Button variant="secondary" onClick={handleCloseModal}>

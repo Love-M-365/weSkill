@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Navbar, Nav, Container, NavDropdown, Button } from 'react-bootstrap';
 import { Bell } from 'react-bootstrap-icons';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate from react-router-dom
-
+import { useNavigate , Link } from 'react-router-dom'; 
+import logo from './photos/weskillremovedbg.png'
 const WeSkillNavbar = () => {
   const [profileCreated, setProfileCreated] = useState(false); // default state is false
   const navigate = useNavigate();
@@ -14,7 +14,7 @@ const WeSkillNavbar = () => {
       setProfileCreated(true); // If user profile exists, set the state to true
     }
   }, []);
-
+  
   const handleJobSeekerButtonClick = () => {
     if (profileCreated) {
       // Redirect to the profile page if profile exists
@@ -28,14 +28,14 @@ const WeSkillNavbar = () => {
   return (
     <Navbar bg="dark" variant="dark" expand="lg" className="shadow-sm">
       <Container>
-        <Navbar.Brand href="#">WeSkill</Navbar.Brand>
+        <Navbar.Brand href="#"><img src={logo} style={{maxHeight:"3rem",maxWidth:"3rem"}}></img></Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link href="#dashboard">Dashboard</Nav.Link>
-            <Nav.Link href="#showcase">My Orders</Nav.Link>
-            <Nav.Link href="#community">Community</Nav.Link>
-            <Nav.Link href="#showcase">Support</Nav.Link>
+          <Nav.Link as={Link} to="/dashboard">Dashboard</Nav.Link>
+            <Nav.Link as={Link} to="/myorders">My Orders</Nav.Link>
+            <Nav.Link as={Link} to="/community">Community</Nav.Link>
+            <Nav.Link as={Link} to="/support">Support</Nav.Link>
           </Nav>
           <Nav className="align-items-center">
             {/* Notification Icon */}
