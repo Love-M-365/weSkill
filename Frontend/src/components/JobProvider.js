@@ -45,6 +45,7 @@ const JobProvider = () => {
   ];
 
   return (
+    <>
     <Container className="my-5">
       <h2 className="text-center mb-4">Your Posted Tasks 💼</h2>
 
@@ -159,6 +160,7 @@ const JobProvider = () => {
         </Col>
       </Row>
     </Container>
+    </>
   );
 };
 
