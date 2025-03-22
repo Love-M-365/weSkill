@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import background from './photos/brad-neathery-nPy0X4xew60-unsplash.jpg';
+import background from './photos/weskillbg.jpg';
 import image1 from './photos/image1.jpg';
 import image2 from './photos/FeatureNetworking.jpg';
 import image3 from './photos/FeatureNotify.jpg';
@@ -102,7 +102,7 @@ export default function Homepage() {
             backgroundPosition: 'center',
             height: '100vh',
             margin: '0.5rem',
-            borderRadius: '1rem',
+            borderRadius: '0.5rem',
             backgroundSize:"cover",
             backgroundRepeat:"no-repeat",
             textAlign:"left"
@@ -110,16 +110,23 @@ export default function Homepage() {
         >
           <h1
             style={{
-              fontFamily: 'BankGothic Lt BT',
-              fontSize: '3.7rem',
-              paddingTop: '5rem',
+              fontFamily: 'Peralta',
+              fontSize: '3rem',
+              paddingTop: '3rem',
+          
             }}
             className="m-3 text-white"
           >
-            Welcome to weSkill
+            Welcome to <h1
+            style={{
+              fontFamily: 'Peralta',
+              fontSize: '4rem',
+              color:"#03C03C"
+            }}
+            className="m-3"
+          >weSkill</h1>
           </h1>
-          <h3 style={{fontFamily:"BankGothic Lt BT",color:"#98fb98",marginLeft:"8rem"}}>Turning hobbies into Hustles</h3>
-          
+          <h3 className="m-4"style={{fontFamily:"BankGothic Lt BT",color:"whitesmoke"}}>Turning hobbies into Hustles</h3>
           <div
             style={{
               height: '18rem',
@@ -133,13 +140,15 @@ export default function Homepage() {
                 className="card-text"
                 style={{
                   fontFamily: 'Swis721 Ex BT',
-                  color:"#fffacd",
-                  fontSize:"1.1rem"
+                  color:"whitesmoke",
+                  fontSize:"1.3rem"
                 }}
               >
               Bridging the gap between talent and opportunity. Whether you're a freelancer ready to showcase your skills or a job provider seeking the best, WeSkill makes connections effortless and efficient. Because great work deserves to be found – and paid for!
               </p>
             </div>
+            <img src={weskill} style={{maxHeight:"10rem",maxWidth:"10rem"}}></img>
+            
           </div>
         </section>
         <section

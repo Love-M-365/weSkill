@@ -11,9 +11,9 @@ const JobSeekerProfile = () => {
   ];
 
   const messages = [
-    { id: 1, provider: 'John Doe', message: 'I have a new task for you.', unread: true },
-    { id: 2, provider: 'Sarah Smith', message: 'Are you available to start today?', unread: false },
-    { id: 3, provider: 'Alex Johnson', message: 'I need an update on your progress.', unread: true },
+    { id: 1, provider: 'Diya Gupta', message: 'I have a new task for you.', unread: true },
+    { id: 2, provider: 'Kabir Singhaniya', message: 'Are you available to start today?', unread: false },
+    { id: 3, provider: 'Arya Veer Singh', message: 'I need an update on your progress.', unread: true },
   ];
 
   return (

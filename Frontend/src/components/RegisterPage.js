@@ -55,8 +55,9 @@ export default function RegisterPage() {
   };
 
   return (
-    <div>
+    <div style={{backgroundColor:"whitesmoke"}}>
       <Navbar></Navbar>
+     
     <div className="container mt-5" >
       <div className="card p-4" >
        

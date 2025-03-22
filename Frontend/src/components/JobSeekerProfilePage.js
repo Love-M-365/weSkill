@@ -23,7 +23,8 @@ const JobSeekerDashboard = () => {
       skills: "React, Node.js, MongoDB",
       image: image
     }
-  ]);
+  ]
+);
 
   return (
     <>

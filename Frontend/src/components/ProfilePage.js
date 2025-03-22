@@ -10,8 +10,24 @@ const ProfilesPage = () => {
         image: image1, 
         description: "Develop websites and web applications", 
         profiles: [
-            { name: "Rajesh Kumar", rating: 4.8, worksDone: 120, topComment: "Great work!", tags: ['ReactJS', 'Frontend', 'Web Developer'], description: "Expert in creating dynamic and responsive web applications." },
-            { name: "Anjali Mehta", rating: 4.5, worksDone: 95, topComment: "Very professional!", tags: ['VueJS', 'JavaScript', 'Frontend Developer'], description: "Specialized in building user-friendly and interactive web designs." }
+            { 
+                name: "Rajesh Kumar", 
+                rating: 4.8, 
+                worksDone: 120, 
+                topComment: "Great work!", 
+                tags: ['ReactJS', 'Frontend', 'Web Developer'], 
+                description: "Expert in creating dynamic and responsive web applications.",
+                badges: ['Creative', 'Punctual', 'Affordable'] // New badges field
+            },
+            { 
+                name: "Anjali Mehta", 
+                rating: 4.5, 
+                worksDone: 95, 
+                topComment: "Very professional!", 
+                tags: ['VueJS', 'JavaScript', 'Frontend Developer'], 
+                description: "Specialized in building user-friendly and interactive web designs.",
+                badges: ['Decent', 'Affordable', 'Lack Professionalism'] // New badges field
+            }
         ]
     }];
 
@@ -62,8 +78,15 @@ const ProfilesPage = () => {
                                 </p>
                                 <div className="d-flex flex-wrap">
                                     <FaTags className="text-secondary me-2" size={18} />
-                                    {profile.tags.map((tag, i) => (
+                                    {profile.tags?.map((tag, i) => (
                                         <span key={i} className="badge bg-primary me-2 mb-1">{tag}</span>
+                                    ))}
+                                </div>
+
+                                {/* Displaying badges */}
+                                <div className="d-flex flex-wrap mt-2">
+                                    {profile.badges?.map((badge, i) => (
+                                        <span key={i} className="badge bg-secondary me-2 mb-1">{badge}</span>
                                     ))}
                                 </div>
                             </div>
