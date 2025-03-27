@@ -1,18 +1,19 @@
-import React, { useState } from "react";
-import { ListGroup,Container, Row, Col, Card, Button } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import { ListGroup, Container, Row, Col, Card, Button, Spinner, Alert } from "react-bootstrap";
 import WeSkillNavbar from "./MainNavbar";
 import PostedWork from "./Postedwork"; 
 import pp from "./photos/pp.jpg";
-import image from './photos/Postedwork.jpg'
-import { Link } from 'react-router-dom';
+import image from './photos/Postedwork.jpg';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+
 const JobSeekerDashboard = () => {
-   const [toast, setToast] = useState(null);
+  const [toast, setToast] = useState(null);
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
   
-  
-      const showToast = (type, message) => {
-          setToast({ type, message });
-          setTimeout(() => setToast(null), 3000);
-      };
   const [tasks, setTasks] = useState([
     {
       title: "Website Development",
@@ -23,13 +24,67 @@ const JobSeekerDashboard = () => {
       skills: "React, Node.js, MongoDB",
       image: image
     }
-  ]
-);
+  ]);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get('http://localhost:5000/api/profiles/my-profile', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        if (response.data.success) {
+          setProfile(response.data.profile);
+        } else {
+          setError('Profile not found');
+        }
+      } catch (err) {
+        console.error('Error fetching profile:', err);
+        setError('Failed to load profile');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+  const showToast = (type, message) => {
+    setToast({ type, message });
+    setTimeout(() => setToast(null), 3000);
+  };
+
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
+        <Spinner animation="border" variant="primary" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container className="my-5">
+        <Alert variant="danger">{error}</Alert>
+        <Button variant="primary" onClick={() => navigate('/create-profile')}>
+          Create Profile
+        </Button>
+      </Container>
+    );
+  }
 
   return (
     <>
       <WeSkillNavbar />
       <Container fluid className="mt-4">
+        {toast && (
+          <Alert variant={toast.type} className="position-fixed top-0 end-0 m-3">
+            {toast.message}
+          </Alert>
+        )}
       
         <Row>
           {/* Profile Section */}
@@ -38,21 +93,21 @@ const JobSeekerDashboard = () => {
               <Card.Body className="d-flex">
                 <div className="me-3">
                   <img
-                    src={pp}
+                    src={profile.profilePhoto || pp}
                     alt="Profile"
                     className="img-fluid rounded-circle"
-                    style={{ width: '100px', height: '100px' }}
+                    style={{ width: '100px', height: '100px', objectFit: 'cover' }}
                   />
                 </div>
 
                 <div className="flex-grow-1">
-                  <Card.Title>Love Maggo</Card.Title>
+                  <Card.Title>{profile.fullName}</Card.Title>
                   <Card.Subtitle className="mb-2 text-muted">
-                    Web Developer | React | JavaScript | Node.js
+                    {profile.primarySkill} | {profile.additionalSkills?.join(' | ')}
                   </Card.Subtitle>
                   <hr />
                   <Card.Text>
-                    Highly skilled web developer with extensive experience in frontend and backend technologies.
+                    {profile.bio || 'No bio available'}
                   </Card.Text>
 
                   <div className="d-flex justify-content-start align-items-center mt-2">
@@ -63,8 +118,14 @@ const JobSeekerDashboard = () => {
                   </div>
 
                   <div className="d-flex justify-content-start mt-4 m-2">
-                    <Button variant=" btn btn-primary" className="w-auto m-2">Edit Profile</Button>
-                    <Button variant="btn btn-success" className="w-auto m-2 "><Link to="/jobseekerorderspage" style={{textDecoration:"none",color:"white"}}>View Dashboard</Link></Button>
+                    <Button variant="primary" className="w-auto m-2" onClick={() => navigate('/edit-profile')}>
+                      Edit Profile
+                    </Button>
+                    <Button variant="success" className="w-auto m-2">
+                      <Link to="/jobseekerorderspage" style={{textDecoration:"none",color:"white"}}>
+                        View Dashboard
+                      </Link>
+                    </Button>
                   </div>
                 </div>
               </Card.Body>
@@ -78,7 +139,11 @@ const JobSeekerDashboard = () => {
                 <Card className="mb-4">
                   <Card.Body className="d-flex justify-content-between align-items-center">
                     <h5 className="m-0">Add New Work</h5>
-                    <Button variant="success"><Link to='/postwork' style={{textDecoration:"none",color:"white"}} >Post Work</Link></Button>
+                    <Button variant="success">
+                      <Link to='/postwork' style={{textDecoration:"none",color:"white"}}>
+                        Post Work
+                      </Link>
+                    </Button>
                   </Card.Body>
                 </Card>
               </Col>
@@ -115,34 +180,34 @@ const JobSeekerDashboard = () => {
             </Row>
           </Col>
         </Row>
+
         {/* Networking Section: Connect with Others */}
-      <Row className="mt-5">
-        <Col md={12}>
-          <Card className="shadow-sm">
-            <Card.Body>
-              <h4 className="card-title">Connect with Like-minded People 🤝</h4>
-              <p>Find people in your domain or competitors to connect, collaborate, and learn together.</p>
+        <Row className="mt-5">
+          <Col md={12}>
+            <Card className="shadow-sm">
+              <Card.Body>
+                <h4 className="card-title">Connect with Like-minded People 🤝</h4>
+                <p>Find people in your domain or competitors to connect, collaborate, and learn together.</p>
 
-              {/* Interest Groups */}
-              <h5>Interest Groups</h5>
-              <ListGroup>
-                {['Web Development Enthusiasts', 'AI and Machine Learning Developers', 'Design Experts', 'React Developers'].map((group, index) => (
-                  <ListGroup.Item key={index} className="d-flex justify-content-between align-items-center">
-                    {group}
-                    <span className="badge bg-primary">45 Members</span>
-                  </ListGroup.Item>
-                ))}
-              </ListGroup>
+                {/* Interest Groups */}
+                <h5>Interest Groups</h5>
+                <ListGroup>
+                  {['Web Development Enthusiasts', 'AI and Machine Learning Developers', 'Design Experts', 'React Developers'].map((group, index) => (
+                    <ListGroup.Item key={index} className="d-flex justify-content-between align-items-center">
+                      {group}
+                      <span className="badge bg-primary">45 Members</span>
+                    </ListGroup.Item>
+                  ))}
+                </ListGroup>
 
-              {/* Button to Explore more networking options */}
-              <Button variant="outline-primary" className="mt-3">
-                Explore More Connections
-              </Button>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-
+                {/* Button to Explore more networking options */}
+                <Button variant="outline-primary" className="mt-3">
+                  Explore More Connections
+                </Button>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
       </Container>
     </>
   );

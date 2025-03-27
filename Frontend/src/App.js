@@ -18,11 +18,12 @@ import MyOrders from './components/MyOrders';
 import PostWorkPage from './components/Postwork';
 import JobSeekerProfile from './components/JobSeekerOrdersPage';
 import PaymentPage from './components/PaymentPage';
+import { AuthProvider } from './AuthContext';
+
 
 const App = () => {
   return (
-
-    <Router>
+    
        <Routes>
           <Route path="/" element={<Homepage />} />
           <Route path="/registerpage" element={<RegisterPage />} />
@@ -44,7 +45,7 @@ const App = () => {
 
           
         </Routes>
-    </Router>
+  
   );
 };
 

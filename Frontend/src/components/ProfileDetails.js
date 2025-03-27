@@ -24,7 +24,6 @@ const ProfileDetails = () => {
     if (!profile) {
         return <p>No profile details available.</p>;
     }
-
     const pricingDetails = [
         { level: 'Basic', price: '₹1,500', time: '2-3 days', features: ['Simple design', 'Basic revisions', 'Quick tasks'] },
         { level: 'Standard', price: '₹3,000', time: '4-6 days', features: ['Moderate complexity', 'More revisions', 'Well-documented delivery'] },

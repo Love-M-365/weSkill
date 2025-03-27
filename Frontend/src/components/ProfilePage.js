@@ -1,129 +1,171 @@
-import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { FaStar, FaBriefcase, FaComment, FaTags, FaUser } from 'react-icons/fa';
+// ProfileDashboard.js
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { FaUser, FaBriefcase, FaGraduationCap, FaMapMarkerAlt, FaLink } from 'react-icons/fa';
 import WeSkillNavbar from './MainNavbar';
-import image1 from "./photos/react.jpg";
 
-const ProfilesPage = () => {
-    const sampleProfiles = [{ 
-        name: "Web Development", 
-        image: image1, 
-        description: "Develop websites and web applications", 
-        profiles: [
-            { 
-                name: "Rajesh Kumar", 
-                rating: 4.8, 
-                worksDone: 120, 
-                topComment: "Great work!", 
-                tags: ['ReactJS', 'Frontend', 'Web Developer'], 
-                description: "Expert in creating dynamic and responsive web applications.",
-                badges: ['Creative', 'Punctual', 'Affordable'] // New badges field
-            },
-            { 
-                name: "Anjali Mehta", 
-                rating: 4.5, 
-                worksDone: 95, 
-                topComment: "Very professional!", 
-                tags: ['VueJS', 'JavaScript', 'Frontend Developer'], 
-                description: "Specialized in building user-friendly and interactive web designs.",
-                badges: ['Decent', 'Affordable', 'Lack Professionalism'] // New badges field
-            }
-        ]
-    }];
+const ProfileDashboard = () => {
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-    const location = useLocation();
-    const navigate = useNavigate();
-    const { selectedField } = location.state || {};
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get('http://localhost:5000/api/profiles/my-profile', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
 
-    // Use sample profiles if no profiles are available
-    const profilesToDisplay = selectedField?.profiles?.length ? selectedField.profiles : sampleProfiles[0].profiles;
-
-    const handleProfileClick = (profile) => {
-        navigate('/profile-details', { state: { profile } });
+        if (response.data.success) {
+          setProfile(response.data.profile);
+        } else {
+          setError('Profile not found');
+        }
+      } catch (err) {
+        console.error('Error fetching profile:', err);
+        setError('Failed to load profile');
+      } finally {
+        setLoading(false);
+      }
     };
 
+    fetchProfile();
+  }, []);
+
+  if (loading) {
     return (
-        <>
-        <WeSkillNavbar />
-        <div className="container my-5">
-            <h2 className="mb-4">{selectedField?.name || "Profiles you need"}</h2>
-            <p>{selectedField?.description || "Explore some sample profiles to get started."}</p>
+      <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
 
-            <div>
-                {profilesToDisplay.map((profile, index) => (
-                    <div 
-                        className="card shadow-sm p-3 mb-3 profile-card" 
-                        key={index} 
-                        onClick={() => handleProfileClick(profile)}
-                    >
-                        <div className="d-flex align-items-center">
-                            <div className="profile-pic me-3">
-                                <FaUser className="text-white" size={40} />
-                            </div>
+  if (error) {
+    return (
+      <div className="container my-5">
+        <div className="alert alert-danger">{error}</div>
+        <button className="btn btn-primary" onClick={() => navigate('/create-profile')}>
+          Create Profile
+        </button>
+      </div>
+    );
+  }
 
-                            <div className="flex-grow-1">
-                                <h5 className="mb-1">{profile.name}</h5>
-                                <p className="text-muted mb-2" style={{ fontStyle: "italic" }}>
-                                    {profile.description || "No description available"}
-                                </p>
-                                <div className="d-flex align-items-center text-muted mb-2">
-                                    <FaStar className="text-warning me-1" size={18} />
-                                    <span className="me-3">{profile.rating}</span>
-                                    <FaBriefcase className="text-success me-1" size={18} />
-                                    <span>{profile.worksDone} Works</span>
-                                </div>
-                                <p className="text-muted mb-2">
-                                    <FaComment className="text-info me-1" size={16} />
-                                    {profile.topComment}
-                                </p>
-                                <div className="d-flex flex-wrap">
-                                    <FaTags className="text-secondary me-2" size={18} />
-                                    {profile.tags?.map((tag, i) => (
-                                        <span key={i} className="badge bg-primary me-2 mb-1">{tag}</span>
-                                    ))}
-                                </div>
-
-                                {/* Displaying badges */}
-                                <div className="d-flex flex-wrap mt-2">
-                                    {profile.badges?.map((badge, i) => (
-                                        <span key={i} className="badge bg-secondary me-2 mb-1">{badge}</span>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
+  return (
+    <>
+      <WeSkillNavbar />
+      <div className="container my-5">
+        <div className="row">
+          <div className="col-md-4">
+            <div className="card shadow-sm mb-4">
+              <div className="card-body text-center">
+                {profile.profilePhoto ? (
+                  <img 
+                    src={profile.profilePhoto} 
+                    alt="Profile" 
+                    className="rounded-circle mb-3" 
+                    style={{ width: '150px', height: '150px', objectFit: 'cover' }}
+                  />
+                ) : (
+                  <div className="d-flex justify-content-center mb-3">
+                    <div className="bg-primary rounded-circle d-flex align-items-center justify-content-center" 
+                      style={{ width: '150px', height: '150px' }}>
+                      <FaUser size={60} className="text-white" />
                     </div>
-                ))}
+                  </div>
+                )}
+                <h3>{profile.fullName}</h3>
+                <p className="text-muted">{profile.primarySkill}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="col-md-8">
+            <div className="card shadow-sm mb-4">
+              <div className="card-body">
+                <h4 className="mb-4">About Me</h4>
+                <p>{profile.bio}</p>
+
+                <div className="row mt-4">
+                  <div className="col-md-6">
+                    <div className="d-flex align-items-center mb-3">
+                      <FaBriefcase className="me-3 text-primary" size={20} />
+                      <div>
+                        <h6 className="mb-0">Work Type</h6>
+                        <p className="text-muted mb-0">
+                          {profile.typeOfWork?.join(', ') || 'Not specified'}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="d-flex align-items-center mb-3">
+                      <FaGraduationCap className="me-3 text-primary" size={20} />
+                      <div>
+                        <h6 className="mb-0">Education</h6>
+                        <p className="text-muted mb-0">
+                          {profile.highestQualification} in {profile.fieldOfStudy}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col-md-6">
+                    <div className="d-flex align-items-center mb-3">
+                      <FaMapMarkerAlt className="me-3 text-primary" size={20} />
+                      <div>
+                        <h6 className="mb-0">Work Preference</h6>
+                        <p className="text-muted mb-0">
+                          {profile.preferredWorkLocation || 'Not specified'}
+                        </p>
+                      </div>
+                    </div>
+
+                    {profile.links?.length > 0 && (
+                      <div className="d-flex align-items-center mb-3">
+                        <FaLink className="me-3 text-primary" size={20} />
+                        <div>
+                          <h6 className="mb-0">Links</h6>
+                          <div className="d-flex flex-wrap">
+                            {profile.links.map((link, index) => (
+                              <a 
+                                key={index} 
+                                href={link} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="me-2 mb-1"
+                              >
+                                {new URL(link).hostname}
+                              </a>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <style jsx>{`
-                .profile-pic {
-                    width: 60px;
-                    height: 60px;
-                    background-color: #007bff;
-                    border-radius: 50%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-                }
-                .profile-card {
-                    cursor: pointer;
-                    transition: transform 0.2s ease-in-out;
-                }
-                .profile-card:hover {
-                    transform: scale(1.03);
-                }
-                h5 {
-                    font-weight: bold;
-                    margin: 0;
-                }
-                .text-muted {
-                    font-size: 0.9rem;
-                }
-            `}</style>
+            <div className="text-end">
+              <button 
+                className="btn btn-primary"
+                onClick={() => navigate('/edit-profile')}
+              >
+                Edit Profile
+              </button>
+            </div>
+          </div>
         </div>
-        </>
-    );
+      </div>
+    </>
+  );
 };
 
-export default ProfilesPage;
+export default ProfileDashboard;

@@ -1,43 +1,48 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios'; // Import Axios for HTTP requests
 import WeSkillNavbar from './MainNavbar';
-
-
+import { useAuth } from '../AuthContext';
 export default function JobSeekerQ() {
+  const { user } = useAuth();
+  const userId = localStorage.getItem('userId');
+  const name = localStorage.getItem('userName');
   const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState({
-    workTypes: [],
+  const [formDataState, setFormDataState] = useState({
+    fullName: "",
+    typeOfWork: [],
     primarySkill: '',
     additionalSkill: '',
     additionalSkills: [],
     highestQualification: '',
     fieldOfStudy: '',
     preferredWorkLocation: '',
-    resume: null,
-    portfolio: '',
-    about: '',
+    profilePhoto: null,
+    links: '',
+    bio: '',
     freelancePreference: '',
   });
 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormDataState({ ...formDataState, [e.target.name]: e.target.value });
   };
 
+ 
   const handleWorkTypeChange = (e) => {
     const value = e.target.value;
-    setFormData((prev) => ({
+    setFormDataState(prev => ({
       ...prev,
-      workTypes: prev.workTypes.includes(value)
-        ? prev.workTypes.filter((item) => item !== value)
-        : [...prev.workTypes, value],
+      typeOfWork: [value] // Store as array with single selected value
     }));
   };
 
   const addSkill = () => {
-    if (formData.additionalSkill && !formData.additionalSkills.includes(formData.additionalSkill)) {
-      setFormData((prev) => ({
+    if (formDataState.additionalSkill && !formDataState.additionalSkills.includes(formDataState.additionalSkill)) {
+      setFormDataState((prev) => ({
         ...prev,
         additionalSkills: [...prev.additionalSkills, prev.additionalSkill],
         additionalSkill: '',
@@ -46,19 +51,66 @@ export default function JobSeekerQ() {
   };
 
   const handleFileChange = (e) => {
-    setFormData({ ...formData, resume: e.target.files[0] });
+    setFormDataState({ ...formDataState, profilePhoto: e.target.files[0] });
   };
-
-  const handleSubmit = (e) => {
+  
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (step < 3) {
+    if (step < 2) {
       setStep(step + 1);
     } else {
-      console.log('Form Submitted:', formData);
-      navigate('/job-seeker');
-    }
+     
+   
+        
+        try {
+          const token = localStorage.getItem('token');
+          
+          // Prepare data EXACTLY like Postman does
+          const requestData = {
+            userId: userId, // From your component state
+            fullName: name,
+            typeOfWork: formDataState.typeOfWork[0],
+            primarySkill: formDataState.primarySkill,
+            additionalSkills: formDataState.additionalSkills,
+            highestQualification: formDataState.highestQualification,
+            fieldOfStudy: formDataState.fieldOfStudy,
+            preferredWorkLocation: formDataState.preferredWorkLocation,
+            profilePhoto: formDataState.profilePhoto, // Can be URL or file path
+            links: formDataState.links,
+            bio: formDataState.bio
+          };
+      
+          // Debug: Log the request data
+          console.log('Submitting data:', JSON.stringify(requestData, null, 2));
+      
+          const response = await axios.post(
+            'http://localhost:5000/api/profiles/create',
+            requestData,
+            {
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+              }
+            }
+          );
+      
+          navigate('/job-seeker');
+        } catch (error) {
+          console.error('Full error details:', {
+            message: error.message,
+            response: error.response?.data,
+            request: {
+              url: error.config?.url,
+              headers: error.config?.headers,
+              data: error.config?.data
+            },
+            stack: error.stack
+          });
+          setError(error.response?.data?.message || 'Failed to create profile. Please check all fields.');
+        }
+      };
   };
-
+  
   return (
     <div>
        <WeSkillNavbar></WeSkillNavbar>
@@ -72,7 +124,7 @@ export default function JobSeekerQ() {
                 <h5>What type of work are you looking for?</h5>
                 <div className="d-flex justify-content-around">
                   <div
-                    className={`card ${formData.workTypes.includes('part-time') ? 'border-primary' : ''}`}
+                    className={`card ${formDataState.typeOfWork.includes('part-time') ? 'border-primary' : ''}`}
                     style={{ width: '18rem', cursor: 'pointer' }}
                     onClick={() => handleWorkTypeChange({ target: { value: 'part-time' } })}
                   >
@@ -82,15 +134,15 @@ export default function JobSeekerQ() {
                     </div>
                   </div>
                   <div
-                    className={`card ${formData.workTypes.includes('freelance') ? 'border-primary' : ''}`}
-                    style={{ width: '18rem', cursor: 'pointer' }}
-                    onClick={() => handleWorkTypeChange({ target: { value: 'freelance' } })}
-                  >
-                    <div className="card-body text-center">
-                      <h5 className="card-title">Freelance</h5>
-                      <p className="card-text">Looking for freelance work.</p>
-                    </div>
-                  </div>
+  className={`card ${formDataState.typeOfWork.includes('freelance') ? 'border-primary' : ''}`}
+  style={{ width: '18rem', cursor: 'pointer' }}
+  onClick={() => handleWorkTypeChange({ target: { value: 'freelance' } })}
+>
+  <div className="card-body text-center">
+    <h5 className="card-title">Freelance</h5>
+    <p className="card-text">Looking for freelance work.</p>
+  </div>
+</div>
                 </div>
 
                 <div className="mb-3">
@@ -98,7 +150,7 @@ export default function JobSeekerQ() {
                   <select
                     className="form-control"
                     name="primarySkill"
-                    value={formData.primarySkill}
+                    value={formDataState.primarySkill}
                     onChange={handleChange}
                   >
                     <option value="">Select a Profession</option>
@@ -139,7 +191,7 @@ export default function JobSeekerQ() {
                     style={{ display: 'block' }}
                     className="form-control"
                     name="additionalSkill"
-                    value={formData.additionalSkill}
+                    value={formDataState.additionalSkill}
                     onChange={handleChange}
                   >
                     <option value="">Select skills</option>
@@ -171,9 +223,9 @@ export default function JobSeekerQ() {
                 </button>
 
                 <div className="mt-3">
-                  {formData.additionalSkills.length > 0 && (
+                  {formDataState.additionalSkills.length > 0 && (
                     <div className="d-flex flex-wrap">
-                      {formData.additionalSkills.map((skill, index) => (
+                      {formDataState.additionalSkills.map((skill, index) => (
                         <div key={index} className="badge bg-danger m-1 p-2">
                           {skill}
                         </div>
@@ -192,7 +244,7 @@ export default function JobSeekerQ() {
                   <select
                     className="form-control"
                     name="highestQualification"
-                    value={formData.highestQualification}
+                    value={formDataState.highestQualification}
                     onChange={handleChange}
                   >
                     <option value="">Select Qualification</option>
@@ -217,7 +269,7 @@ export default function JobSeekerQ() {
                   <select
                     className="form-control"
                     name="fieldOfStudy"
-                    value={formData.fieldOfStudy}
+                    value={formDataState.fieldOfStudy}
                     onChange={handleChange}
                   >
                     <option value="">Select Field of Study</option>
@@ -257,8 +309,8 @@ export default function JobSeekerQ() {
                   {['Remote', 'On-Site', 'Hybrid'].map((loc) => (
                     <div
                       key={loc}
-                      className={`card p-3 ${formData.preferredWorkLocation === loc ? 'border-primary' : ''}`}
-                      onClick={() => setFormData({ ...formData, preferredWorkLocation: loc })}
+                      className={`card p-3 ${formDataState.preferredWorkLocation === loc ? 'border-primary' : ''}`}
+                      onClick={() => setFormDataState({ ...formDataState, preferredWorkLocation: loc })}
                     >
                       {loc}
                     </div>
@@ -269,81 +321,31 @@ export default function JobSeekerQ() {
                 <input
                   type="text"
                   className="form-control mt-2"
-                  name="portfolio"
-                  value={formData.portfolio}
+                  name="links"
+                  value={formDataState.links}
                   onChange={handleChange}
-                  placeholder="Portfolio/Work Samples (URL)"
+                  placeholder="links/Work Samples (URL)"
                 />
                 <textarea
                   className="form-control mt-2"
-                  name="about"
-                  value={formData.about}
+                  name="bio"
+                  value={formDataState.bio}
                   onChange={handleChange}
-                  placeholder="Tell us about your work"
+                  placeholder="Tell us bio your work"
                 ></textarea>
               </div>
             )}
-            {step === 3 && (
-              <div>
-                <h5>Bank Details</h5>
-                <div className="mb-3">
-                  <label className="form-label">Account Holder Name</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="accountHolderName"
-                    value={formData.accountHolderName}
-                    onChange={handleChange}
-                    placeholder="Enter Account Holder Name"
-                  />
-                </div>
-
-                <div className="mb-3">
-                  <label className="form-label">Account Number</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="accountNumber"
-                    value={formData.accountNumber}
-                    onChange={handleChange}
-                    placeholder="Enter Account Number"
-                  />
-                </div>
-
-                <div className="mb-3">
-                  <label className="form-label">IFSC Code</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="ifscCode"
-                    value={formData.ifscCode}
-                    onChange={handleChange}
-                    placeholder="Enter IFSC Code"
-                  />
-                </div>
-                 <h3 style={{textAlign:"center"}}>OR</h3>
-                <div className="mb-3">
-                  <label className="form-label">UPI ID</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="upiId"
-                    value={formData.upiId}
-                    onChange={handleChange}
-                    placeholder="Enter UPI ID"
-                  />
-                </div>
-              </div>
-            )}
+            
             {/* Navigation buttons */}
             <div className="d-flex justify-content-between mt-4">
               {step > 1 && (
                 <button type="button" className="btn btn-secondary" onClick={() => setStep(step - 1)}>
                   Back
                 </button>
+                
               )}
               <button type="submit" className="btn btn-primary">
-                {step === 3 ? 'Submit' : 'Next'}
+                {step === 2 ? 'Submit' : 'Next'}
               </button>
             </div>
           </form>
