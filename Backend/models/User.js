@@ -62,6 +62,14 @@ const userSchema = new mongoose.Schema(
       default: 'provider', // Provider is the default role
       required: false, // This field is skippable
     },
+    ordersPlaced: [
+        {
+          orderId: String,
+          amount: Number,
+          status: String,
+          createdAt: { type: Date, default: Date.now },
+        },
+      ],
     createdAt: {
       type: Date,
       default: Date.now,

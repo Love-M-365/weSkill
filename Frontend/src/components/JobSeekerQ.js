@@ -6,7 +6,7 @@ import { useAuth } from '../AuthContext';
 export default function JobSeekerQ() {
   const { user } = useAuth();
   const userId = localStorage.getItem('userId');
-  const name = localStorage.getItem('userName');
+  const name = localStorage.getItem('name');
   const [step, setStep] = useState(1);
   const [formDataState, setFormDataState] = useState({
     fullName: "",
@@ -20,6 +20,7 @@ export default function JobSeekerQ() {
     profilePhoto: null,
     links: '',
     bio: '',
+    upiID:'',
     freelancePreference: '',
   });
 
@@ -41,14 +42,15 @@ export default function JobSeekerQ() {
   };
 
   const addSkill = () => {
-    if (formDataState.additionalSkill && !formDataState.additionalSkills.includes(formDataState.additionalSkill)) {
+    if (formDataState.additionalSkill.trim() !== '' && !formDataState.additionalSkills.includes(formDataState.additionalSkill)) {
       setFormDataState((prev) => ({
         ...prev,
-        additionalSkills: [...prev.additionalSkills, prev.additionalSkill],
+        additionalSkills: [...prev.additionalSkills, prev.additionalSkill.trim()],
         additionalSkill: '',
       }));
     }
   };
+  
 
   const handleFileChange = (e) => {
     setFormDataState({ ...formDataState, profilePhoto: e.target.files[0] });
@@ -65,7 +67,6 @@ export default function JobSeekerQ() {
         try {
           const token = localStorage.getItem('token');
           
-          // Prepare data EXACTLY like Postman does
           const requestData = {
             userId: userId, // From your component state
             fullName: name,
@@ -77,7 +78,8 @@ export default function JobSeekerQ() {
             preferredWorkLocation: formDataState.preferredWorkLocation,
             profilePhoto: formDataState.profilePhoto, // Can be URL or file path
             links: formDataState.links,
-            bio: formDataState.bio
+            bio: formDataState.bio,
+            upiID:formDataState.upiID
           };
       
           // Debug: Log the request data
@@ -93,7 +95,7 @@ export default function JobSeekerQ() {
               }
             }
           );
-      
+          const profileId = localStorage.setItem('profileId');
           navigate('/job-seeker');
         } catch (error) {
           console.error('Full error details:', {
@@ -195,26 +197,26 @@ export default function JobSeekerQ() {
                     onChange={handleChange}
                   >
                     <option value="">Select skills</option>
-                    <option value="webDevelopment">Web Development</option>
-    <option value="graphicDesign">Graphic Design</option>
-    <option value="contentWriting">Content Writing</option>
-    <option value="seo">SEO & Digital Marketing</option>
-    <option value="dataAnalysis">Data Analysis</option>
-    <option value="machineLearning">Machine Learning</option>
-    <option value="cyberSecurity">Cybersecurity</option>
-    <option value="videoEditing">Video Editing</option>
-    <option value="uxDesign">UX/UI Design</option>
-    <option value="cloudComputing">Cloud Computing</option>
-    <option value="projectManagement">Project Management</option>
-    <option value="socialMediaManagement">Social Media Management</option>
-    <option value="businessStrategy">Business Strategy</option>
-    <option value="networking">Networking</option>
-    <option value="gameDevelopment">Game Development</option>
-    <option value="blockchain">Blockchain Development</option>
-    <option value="devOps">DevOps</option>
-    <option value="photography">Photography</option>
-    <option value="illustration">Illustration</option>
-    <option value="videoProduction">Video Production</option>
+                    <option value="Web Development">Web Development</option>
+    <option value="Graphic Design">Graphic Design</option>
+    <option value="Content Writing">Content Writing</option>
+    <option value="Digital Marketing">SEO & Digital Marketing</option>
+    <option value="Data Analysis">Data Analysis</option>
+    <option value="Machine Learning">Machine Learning</option>
+    <option value="Cyber Security">Cybersecurity</option>
+    <option value="Video Editing">Video Editing</option>
+    <option value="UX Design">UX/UI Design</option>
+    <option value="Cloud Computing">Cloud Computing</option>
+    <option value="Project Management">Project Management</option>
+    <option value="Social Media Management">Social Media Management</option>
+    <option value="Business Strategy">Business Strategy</option>
+    <option value="Networking">Networking</option>
+    <option value="Game Development">Game Development</option>
+    <option value="Blockchain">Blockchain Development</option>
+    <option value="DevOps">DevOps</option>
+    <option value="Photography">Photography</option>
+    <option value="Illustration">Illustration</option>
+    <option value="Video Production">Video Production</option>
                   </select>
                 </div>
 
@@ -325,6 +327,14 @@ export default function JobSeekerQ() {
                   value={formDataState.links}
                   onChange={handleChange}
                   placeholder="links/Work Samples (URL)"
+                />
+                <input
+                  type="text"
+                  className="form-control mt-2"
+                  name="upiID"
+                  value={formDataState.upiID}
+                  onChange={handleChange}
+                  placeholder="UPI ID"
                 />
                 <textarea
                   className="form-control mt-2"

@@ -17,44 +17,71 @@ const ProfileSchema = new mongoose.Schema({
  
   },
   primarySkill: {
-    type: String, // Main skill (e.g., "Frontend Developer", "Data Scientist")
+    type: String, 
     required: true,
     trim: true,
   },
   additionalSkills: {
-    type: [String], // Array of additional skills
+    type: [String],
     required: false,
     default: [],
   },
   highestQualification: {
-    type: String, // Example: "Bachelor's", "Master's", "PhD", etc.
+    type: String, 
     required: true,
   },
   fieldOfStudy: {
-    type: String, // Example: "Computer Science", "Engineering", "Arts", etc.
+    type: String, 
     required: true,
     trim: true,
   },
   preferredWorkLocation: {
-    type: String, // Example: "Remote", "Delhi", "Bangalore", etc.
+    type: String, 
     required: true,
     trim: true,
   },
   profilePhoto: {
-    type: String, // URL or path to profile photo (jpg, png)
+    type: String, 
     required: false,
   },
   links: {
-    type: [String], // Array of portfolio or social media links
+    type: [String], 
     required: false,
     default: [],
   },
   bio: {
-    type: String, // Short biography or description
+    type: String, 
     required: true,
     trim: true,
-    maxlength: 300, // Limit the length of the bio
+    maxlength: 300, 
   },
+  badges: {
+    type: [String], 
+    required: false,
+    default: [],
+  },
+  uploadedWorks: {
+    type: Number, 
+    required: false,
+    default: 0,
+  },
+  rating: {
+    type: Number, 
+    required: false,
+    default: 0,
+  },
+  upiID: {
+    type: String, 
+    required: true,
+  },
+  orders: [
+    {
+      orderId: String,
+      amount: Number,
+      status: String, 
+      createdAt: { type: Date, default: Date.now },
+    },
+  ],
   createdAt: {
     type: Date,
     default: Date.now,
@@ -65,7 +92,6 @@ const ProfileSchema = new mongoose.Schema({
   },
 });
 
-// Middleware to update `updatedAt` on save
 ProfileSchema.pre('save', function (next) {
   this.updatedAt = Date.now();
   next();

@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const Profile = require('../models/Profile'); // Import the Profile model
 
 // Generate JWT Token
 const generateToken = (id) => {
@@ -33,7 +34,6 @@ const signupUser = async (req, res) => {
     }
 
     // Hash the password
-    
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create a new user
@@ -67,71 +67,54 @@ const signupUser = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+// @desc    User Login
+// @route   POST /api/users/login
+// @access  Public
 const loginUser = async (req, res) => {
-    const { email, password } = req.body;
-  
-    try {
-      if (!email || !password) {
-        return res.status(400).json({ error: "Email and password are required." });
-      }
+  const { email, password } = req.body;
 
-      const trimmedEmail = email.trim().toLowerCase();
-      const trimmedPassword = password.trim();
-      
-      console.log("Login attempt:", {
-        email: trimmedEmail,
-        password: trimmedPassword,
-        passwordLength: trimmedPassword.length
-      });
-
-      const user = await User.findOne({ email: trimmedEmail });
-      if (!user) {
-        console.log("User not found in database");
-        return res.status(404).json({ error: "User not found." });
-      }
-
-      console.log("User found:", {
-        userId: user._id,
-        dbPassword: user.password,
-        dbPasswordLength: user.password.length,
-        dbPasswordType: typeof user.password
-      });
-
-      // Manually compare first few characters to verify storage
-      console.log("Password hash starts with:", user.password.substring(0, 10));
-
-      const isMatch = await bcrypt.compare(trimmedPassword, user.password);
-      console.log("Bcrypt compare result:", isMatch);
-
-      if (!isMatch) {
-        // Test with a known good hash to verify bcrypt is working
-        const testHash = await bcrypt.hash("test123", 10);
-        const testMatch = await bcrypt.compare("test123", testHash);
-        console.log("Sanity check - should be true:", testMatch);
-        
-        return res.status(401).json({ error: "Invalid credentials. Please try again." });
-      }
-
-     
-      const token = generateToken(user._id);
-  
-      // Respond with token and user details (excluding password)
-      res.status(200).json({
-        message: "Login successful!",
-        token,
-        user: {
-          id: user._id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
-        },
-      });
-    } catch (error) {
-      console.error("Login error:", error);
-      res.status(500).json({ error: error.message });
+  try {
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email and password are required.' });
     }
+
+    const trimmedEmail = email.trim().toLowerCase();
+    const trimmedPassword = password.trim();
+
+    const user = await User.findOne({ email: trimmedEmail });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found.' });
+    }
+
+    const isMatch = await bcrypt.compare(trimmedPassword, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ error: 'Invalid credentials. Please try again.' });
+    }
+
+    // Find the associated profile using userId
+    const profile = await Profile.findOne({ userId: user._id });
+
+    const token = generateToken(user._id);
+
+    // Respond with token, user details, and profileId (if exists)
+    res.status(200).json({
+      message: 'Login successful!',
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+      profileId: profile ? profile._id : null, // Include profileId if it exists
+    });
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ error: error.message });
+  }
 };
-  
+
 module.exports = {
   signupUser,
   loginUser,

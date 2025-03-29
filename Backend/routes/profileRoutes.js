@@ -25,9 +25,13 @@ router.post(
   profileController.createProfile
 );
 // Other routes remain the same
+
 router.get('/my-profile', authMiddleware, profileController.getMyProfile);
 router.put('/update/:userId', authMiddleware, profileController.updateProfile);
 router.delete('/delete/:userId', authMiddleware, profileController.deleteProfile);
-router.get('/', authMiddleware, profileController.getAllProfiles);
+
+router.get('/check',authMiddleware, profileController.checkProfile);
+router.post("/filter", profileController.filterProfiles);
+router.get('/:id', profileController.getProfileById);
 
 module.exports = router;

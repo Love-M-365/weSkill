@@ -5,6 +5,7 @@ import weskill from './photos/weskillremovedbg.png';
 
 export default function RegisterPage() {
   const navigate = useNavigate();
+  const [error, setError] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     age: '',
@@ -33,10 +34,21 @@ export default function RegisterPage() {
       });
       const data = await response.json();
       if (response.ok) {
-        alert('Registration successful!');
-        navigate('/aiquestions'); // Redirect to AI questions page
+        console.log("register response:", data); // Log the entire response data
+        
+        const { token } = data; // Extract the token from the parsed data
+  
+        if (token) {
+          localStorage.setItem('token', token);
+          localStorage.setItem('userId', data.user._id);
+          localStorage.setItem('name', data.user.name);
+          console.log("Token stored in localStorage:", token);
+        } else {
+          console.error("No token received in response.");
+        }
+        navigate('/welcomemsg')
       } else {
-        alert(data.error || 'Something went wrong. Please try again.');
+        setError(data.message || 'An unknown error ocurred'); // Error from the server
       }
     } catch (error) {
       console.error('Error:', error.message);

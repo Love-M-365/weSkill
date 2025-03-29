@@ -19,6 +19,8 @@ import PostWorkPage from './components/Postwork';
 import JobSeekerProfile from './components/JobSeekerOrdersPage';
 import PaymentPage from './components/PaymentPage';
 import { AuthProvider } from './AuthContext';
+import WelcomeMsg from './components/WelcomeMsg';
+import Profiles from './components/Profiles';
 
 
 const App = () => {
@@ -40,6 +42,8 @@ const App = () => {
           <Route path="/postwork" element={<PostWorkPage />} />
           <Route path="/jobseekerorderspage" element={<JobSeekerProfile />} />
           <Route path="/paymentpage" element={<PaymentPage />} />
+          <Route path="/welcomemsg" element={<WelcomeMsg />} />
+          <Route path="/profilesDS" element={<Profiles />} />
           
           
 

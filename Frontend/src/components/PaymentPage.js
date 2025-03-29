@@ -1,55 +1,31 @@
-import React, { useEffect } from 'react';
+import { QRCodeCanvas } from "qrcode.react";
+import React from "react";
+const PaymentPage = ({ orderId }) => {
+  const upiId = "ishmalikbps@oksbi"; 
+  const paymentURL = `upi://pay?pa=${upiId}&pn=WeSkill&am=1&cu=INR&tid=${orderId}`;
 
-const PaymentPage = () => {
-  useEffect(() => {
-    // Load the Razorpay script
-    const script = document.createElement('script');
-    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-    script.async = true;
-    document.body.appendChild(script);
-
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
-
-  const handlePayment = async () => {
-    // Fetch Razorpay order ID from your backend
-    const response = await fetch('/create-order', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ amount: 1000 }), // Amount in INR (1 INR = 100 paise)
-    });
-    const data = await response.json();
-
-    // Initialize Razorpay payment modal
-    const options = {
-      key: 'YOUR_RAZORPAY_KEY_ID', // Your Razorpay key ID
-      amount: 1000 * 100, // Amount in paise
-      currency: 'INR',
-      order_id: data.orderId,
-      handler: function (response) {
-        // Handle successful payment
-        console.log('Payment successful', response);
-        // Notify your backend about the payment success (for verification)
-      },
-      prefill: {
-        name: 'John Doe',
-        email: 'john.doe@example.com',
-        contact: '9876543210',
-      },
-    };
-
-    const rzp = new window.Razorpay(options);
-    rzp.open();
+  const handlePaymentVerification = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/placeOrder//verify-payment/${orderId}`);
+      const data = await response.json();
+      if (data.success) {
+        alert("Payment Successful! Order Placed.");
+        
+      } else {
+        alert("Payment Pending or Failed.");
+      }
+    } catch (error) {
+      console.error("Error verifying payment:", error);
+    }
   };
 
   return (
     <div>
-      <h2>Make a Payment</h2>
-      <button onClick={handlePayment}>Pay Now</button>
+      <h1>Scan to Pay</h1>
+      <p>Amount: ₹1</p>
+      <QRCodeCanvas value={paymentURL} size={256} />
+      <p>Scan the QR code using your UPI app.</p>
+      <button onClick={handlePaymentVerification}>Verify Payment</button>
     </div>
   );
 };

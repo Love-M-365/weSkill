@@ -1,36 +1,52 @@
 const Work = require('../models/Work'); 
 const Profile = require('../models/Profile'); 
 
+
+// Add Work Controller
 exports.addWork = async (req, res) => {
     try {
-        const { profileId, title, description } = req.body;
+        const { profileId, category, description, basic, standard, premium, skills, sample,contact } = req.body;
 
-        const work = new Work({
-            profile: profileId,
-            title,
-            description
+        // Validate profileId
+        if (!profileId) {
+            return res.status(400).json({ error: 'Profile ID is required' });
+        }
+
+        // Create a new work document
+        const newWork = new Work({
+            profileId, // Link work to a profile
+            category,
+            description,
+            basic,
+            standard,
+            premium,
+            skills,
+            sample,
+            contact
         });
 
-        await work.save();
+        // Save work to the database
+        const savedWork = await newWork.save();
 
-        // Update the profile to include the new work
-        const profile = await Profile.findById(profileId);
-        profile.uploadedWorks.push(work._id);
-        await profile.save();
-
-        res.status(201).json({ message: 'Work added successfully', work });
+        // Send a success response
+        res.status(201).json({
+            message: 'Work posted successfully!',
+            work: savedWork,
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error('Error adding work:', error.message);
+        res.status(500).json({
+            error: 'Failed to post work. Please try again later.',
+        });
     }
 };
-
 exports.getWorksForProfile = async (req, res) => {
     try {
       const { profileId } = req.params;
   
       const works = await Work.find({ profileId });
       if (!works || works.length === 0) {
-        return res.status(404).json({ message: 'No works found for this profile' });
+        return res.status(200).json({ message: 'No works found for this profile' });
       }
   
       res.status(200).json(works);
@@ -40,7 +56,7 @@ exports.getWorksForProfile = async (req, res) => {
   };
   exports.updateWork = async (req, res) => {
     try {
-      const { workId, title, description, fileUrl } = req.body;
+      const { workId, category, description, fileUrl } = req.body;
   
       const work = await Work.findById(workId);
       if (!work) {

@@ -1,6 +1,5 @@
 const Profile = require('../models/Profile');
 
-
 const path = require('path');
 exports.createProfile = async (req, res) => {
     try {
@@ -28,11 +27,12 @@ exports.createProfile = async (req, res) => {
         preferredWorkLocation: req.body.preferredWorkLocation,
         links: req.body.links,
         bio: req.body.bio,
+        upiID: req.body.upiID,
         profilePhoto: req.file ? req.file.path : null
       };
   
       // Validate required fields
-      const requiredFields = ['userId', 'fullName', 'typeOfWork', 'primarySkill', 'highestQualification', 'fieldOfStudy', 'bio'];
+      const requiredFields = ['userId', 'fullName', 'typeOfWork', 'primarySkill', 'highestQualification', 'fieldOfStudy', 'bio','upiID'];
       const missingFields = requiredFields.filter(field => !profileData[field] || (Array.isArray(profileData[field]) && profileData[field].length === 0));
   
       if (missingFields.length > 0) {
@@ -100,21 +100,11 @@ exports.deleteProfile = async (req, res) => {
   }
 };
 
-// Get all profiles (optional, for admin or list purposes)
-exports.getAllProfiles = async (req, res) => {
-  try {
-    const profiles = await Profile.find().sort({ createdAt: -1 });
-    res.status(200).json(profiles);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Failed to retrieve profiles.', error });
-  }
-};
-// controllers/profileController.js
+
 exports.getMyProfile = async (req, res) => {
     try {
       const profile = await Profile.findOne({ userId: req.user.id })
-        .select('fullName typeOfWork primarySkill highestQualification fieldOfStudy preferredWorkLocation bio links profilePhoto')
+        .select('fullName typeOfWork primarySkill highestQualification fieldOfStudy additionalSkills preferredWorkLocation bio upiID links profilePhoto')
         .lean();
   
       if (!profile) {
@@ -134,5 +124,92 @@ exports.getMyProfile = async (req, res) => {
         success: false,
         message: 'Internal server error' 
       });
+    }
+  };
+
+exports.checkProfile = async (req, res) => {
+    try {
+        const { profileId } = req.query; // Pass the profile ID as a query parameter
+        if (!profileId) {
+            return res.status(400).json({ error: 'Profile ID is required' });
+        }
+
+        // Check if the profile exists
+        const profile = await Profile.findOne({ profileId });
+        if (profile) {
+            return res.status(200).json({ exists: true, profile });
+        } else {
+            return res.status(404).json({ exists: false });
+        }
+    } catch (error) {
+        console.error('Error checking profile:', error.message);
+        res.status(500).json({ error: 'Failed to check profile.' });
+    }
+};
+exports.filterProfiles = async (req, res) => {
+    try {
+      const { category, filters } = req.body;
+      console.log("Category:", category);
+      console.log("Filters:", filters);
+  
+      // Build the query
+      const query = {
+        $or: [
+          { category }, // Match category
+          { additionalSkills: { $regex: new RegExp(category, "i") } }, // Match in additionalSkills (case-insensitive)
+        ],
+      };
+  
+      // Add additional filters if provided
+      if (filters) {
+        query.$and = []; // Add additional filters using $and
+  
+        // Filter by primarySkills
+        if (filters.primarySkills) {
+          query.$and.push({ primarySkills: { $in: filters.primarySkills } });
+        }
+  
+        // Filter by rating
+        if (filters.rating) {
+          query.$and.push({ rating: { $gte: filters.rating } });
+        }
+  
+        // Filter by badges
+        if (filters.badges) {
+          query.$and.push({ badges: { $in: filters.badges } });
+        }
+      }
+  
+      console.log("MongoDB Query:", query);
+  
+      // Fetch profiles based on the query
+      const profiles = await Profile.find(query);
+      if (!profiles || profiles.length === 0) {
+        return res.status(404).json({ message: "No profiles found" });
+      }
+  
+      console.log("Matched Profiles:", profiles);
+      res.status(200).json(profiles);
+    } catch (error) {
+      console.error("Error in filterProfiles Controller:", error.message);
+      res.status(500).json({ message: "An error occurred", error: error.message });
+    }
+  };
+exports.getProfileById = async (req, res) => {
+    const { id } = req.params; 
+  
+    try {
+        const profile = await Profile.findById(id);
+        
+      // Check if profile exists
+      if (!profile) {
+        return res.status(404).json({ message: 'Profile not found' });
+      }
+  
+      // Return profile if found
+      res.status(200).json(profile);
+    } catch (error) {
+      console.error('Error fetching profile:', error);
+      res.status(500).json({ message: 'Server error, please try again later' });
     }
   };

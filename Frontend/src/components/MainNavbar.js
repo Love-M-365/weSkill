@@ -4,26 +4,29 @@ import { Bell } from 'react-bootstrap-icons';
 import { useNavigate , Link } from 'react-router-dom'; 
 import logo from './photos/weskillremovedbg.png'
 const WeSkillNavbar = () => {
-  const [profileCreated, setProfileCreated] = useState(false); // default state is false
+  const [profileCreated, setProfileCreated] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if the profile is already created, you can replace this with an actual API call
-    const userProfile = localStorage.getItem("userProfile"); // for example, using localStorage to check if profile exists
+
+    const userProfile = localStorage.getItem("userProfile"); 
     if (userProfile) {
-      setProfileCreated(true); // If user profile exists, set the state to true
+      setProfileCreated(true); 
     }
   }, []);
   
-  const handleJobSeekerButtonClick = () => {
-    if (profileCreated) {
-      // Redirect to the profile page if profile exists
-      navigate("/profile");
+  const handleJobSeekerButtonClick = async () => {
+    const profileId = localStorage.getItem("profileId");
+    console.log(profileId);
+    if (profileId === null) {
+      navigate("/questionnaire");
     } else {
-      // Open the questionnaire if profile does not exist
-      navigate("/questionnaire"); // or open the questionnaire modal
+     
+      navigate(`/job-Seeker`);
+      
     }
-  };
+};
+
 
   return (
     <Navbar bg="dark" variant="dark" expand="lg" className="shadow-sm">
@@ -54,7 +57,7 @@ const WeSkillNavbar = () => {
                 boxShadow: '0 0 8px #28a745'
               }}
             >
-              {profileCreated ? "Back to main Dashboard" : "Job Seeker"}
+             Job Seeker
             </Button>
 
             <NavDropdown title="Profile" id="basic-nav-dropdown" className="ms-3">

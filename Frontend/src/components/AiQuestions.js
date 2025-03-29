@@ -1,172 +1,139 @@
-import React, { useState } from 'react';
-import { Button, Card, CardContent } from './Card';
-import image1 from "./photos/react.jpg";
-import image2 from "./photos/Graphic.jpg";
-import image3 from "./photos/cw.jpg";
-import image4 from "./photos/logo.jpg";
-import image5 from "./photos/uiux.webp";
-import image6 from "./photos/ds.jpg";
-import image7 from "./photos/other.jpg";
-import WeSkillNavbar from './MainNavbar';
-import weSkill from "./photos/weskillremovedbg.png";
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { Button, Card, CardContent } from "./Card";
+import WeSkillNavbar from "./MainNavbar";
+import { useNavigate } from "react-router-dom";
 
-const questions = [
-  {
-    question: "What type of service are you looking for?",
-    options: [
-      { label: "Web Development", image: image1 },
-      { label: "Graphic Design", image: image2 },
-      { label: "Logo Design", image: image4 },
-      { label: "Content Writing", image: image3 },
-      { label: "Photography", image: image5 },
-      { label: "Animation", image: image6 },
-      { label: "AI Text-to-Audio", image: image7 },
-      { label: "Other", image: image7 }
-    ]
-  },
-  {
-    question: "What type of website do you need?",
-    options: [
-      { label: " Portfolio Website" },
-      { label: "E-commerce Store" },
-      { label: "Business Website" },
-      { label: "Blog" },
-      { label: "Custom Web Application" },
-      { label: "Other" }
-
-    ]
-  },
-  
-  {
-    question: "Technology Preference",
-    options: [
-      { label: "HTML, CSS, JavaScript" },
-      { label: "React, Vue.js, Angular" },
-      { label: "WordPress, Shopify, Wix" },
-      { label: "Full-stack (Node.js, Express, MongoDB, SQL)" },
-      { label: "No preference, need expert recommendation" }
-    ]
-  },
-  {
-    question: "Additional Services",
-    options: [
-      { label: "Responsive Design" },
-      { label: "Website Optimization (Speed, SEO, Security)" },
-      { label: "Website Optimization (Speed, SEO, Security)" },
-      { label: "Payment Gateway Setup" },
-      { label: "Other" }
-    ]
-  }
-];
+const allQuestions = {
+  "Web Development": [
+    {
+      question: "What type of website do you need?",
+      options: [
+        { label: "Portfolio Website", image: "" },
+        { label: "E-commerce Store", image: "" },
+        { label: "Business Website", image: "" },
+        { label: "Blog", image: "" },
+        { label: "Custom Web Application", image: "" },
+        { label: "Other", image: "" },
+      ],
+    },
+    {
+      question: "Technology Preference",
+      options: [
+        { label: "HTML, CSS, JavaScript" },
+        { label: "React, Vue.js, Angular" },
+        { label: "WordPress, Shopify, Wix" },
+        { label: "Full-stack (Node.js, Express, MongoDB, SQL)" },
+        { label: "No preference, need expert recommendation" },
+      ],
+    },
+    {
+      question: "Additional Services",
+      options: [
+        { label: "Responsive Design" },
+        { label: "Website Optimization (Speed, SEO, Security)" },
+        { label: "Payment Gateway Setup" },
+        { label: "Other" },
+      ],
+    },
+  ],
+  "Graphic Design": [
+    {
+      question: "What type of design work do you need?",
+      options: [
+        { label: "Logo Design" },
+        { label: "UI/UX Design" },
+        { label: "Social Media Graphics" },
+        { label: "Brand Identity" },
+        { label: "Other" },
+      ],
+    },
+  ],
+};
 
 const Questionnaire = () => {
+  const [serviceType, setServiceType] = useState("Web Development");
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState({});
   const [selectedOption, setSelectedOption] = useState(null);
-  const [showWelcome, setShowWelcome] = useState(true); // State to handle showing the welcome message
-  const [serviceType, setServiceType] = useState(null); // Store selected service type
   const navigate = useNavigate();
-  const handleNext = () => {
-    if (!selectedOption) return alert("Please select an option before proceeding.");
 
-    setAnswers({ ...answers, [questions[currentQuestion].question]: selectedOption });
+  const questions = allQuestions[serviceType] || [];
+
+  const handleNext = () => {
+    if (!selectedOption) {
+      alert("Please select an option before proceeding.");
+      return;
+    }
+
+    // Use functional updates to ensure the latest state
+    setAnswers((prevAnswers) => ({
+      ...prevAnswers,
+      [questions[currentQuestion].question]: selectedOption,
+    }));
+
     setSelectedOption(null);
 
-    if (currentQuestion === 0 && serviceType === "Web Development" && selectedOption === "Web Development") {
-      setCurrentQuestion(1);
-    } else if (currentQuestion < questions.length - 1) {
+    if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
-      console.log('User Responses:', answers);
-      navigate('/profiles');
+      // Navigate after ensuring all answers are saved
+      console.log("User Responses:", { ...answers, [questions[currentQuestion].question]: selectedOption });
+      navigate("/profilesDS", { state: { serviceType, answers: { ...answers, [questions[currentQuestion].question]: selectedOption } } });
     }
   };
 
   const handleSkip = () => {
-    setSelectedOption(null); // Reset selected option
-    navigate('/dashboard'); // Move to next question
-  };
-
-  const handleStart = () => {
-    setShowWelcome(false); // Hide the welcome message when the user starts the questionnaire
+    navigate("/profiles");
   };
 
   return (
     <>
       <WeSkillNavbar />
-
-      <div className="container d-flex justify-content-center align-items-center vh-100">
-        <Card className="p-5 shadow-lg rounded-4 w-100" style={{ maxWidth: '700px' }}>
+      <div className="container d-flex justify-content-center align-items-center py-5">
+        <Card className="p-5 shadow-lg rounded-4 w-100" style={{ maxWidth: "800px" }}>
           <CardContent>
-            {showWelcome ? (
-              // Welcome message section
-              <div className="text-center">
-                <div className="mb-4">
-                  <img src={weSkill} alt="WeSkill Logo" className="img-fluid rounded mb-3" style={{ maxHeight: "10rem", maxWidth: '20rem' }} />
-                </div>
-                <h2 className="text-primary mb-4" style={{ fontFamily: "Big Shoulders Inline", fontSize: "5rem" }}>
-                  Welcome to WeSkill!
-                </h2>
-                <p className="lead text-secondary mb-4" style={{ fontFamily: "'Open Sans', sans-serif" }}>
-                  We're excited to have you here. Let's get started with a quick questionnaire to help us understand your needs.
-                </p>
-                <Button className="bg-success mt-3 px-4 py-2" onClick={handleStart}>
-                  Get Started
-                </Button>
-              </div>
-            ) : (
-              // Questionnaire section
+            {questions.length > 0 ? (
               <>
-                <h2 className="text-primary mb-4 text-center">
-                  {questions[currentQuestion].question}
+                <h2 className="text-primary mb-4 text-center fw-bold">
+                  {questions[currentQuestion]?.question}
                 </h2>
-
-                {/* Display options with images for the first question */}
-                <div className="d-flex flex-wrap gap-3 justify-content-center mb-4">
-                  {currentQuestion === 0
-                    ? questions[currentQuestion].options.map((option, index) => (
-                        <div
-                          key={index}
-                          className={`option-card p-3 rounded-3 text-center ${selectedOption === option.label ? 'border border-primary shadow' : 'border'}`}
-                          style={{ width: '150px', cursor: 'pointer' }}
-                          onClick={() => {
-                            setSelectedOption(option.label);
-                            setServiceType(option.label);
-                          }}
-                        >
-                          <img src={option.image} alt={option.label} className="img-fluid rounded mb-2" style={{ maxHeight: "5rem" }} />
-                          <div>{option.label}</div>
-                        </div>
-                      ))
-                    : questions[currentQuestion].options.map((option, index) => (
-                        <div
-                          key={index}
-                          className={`option-card p-3 rounded-3 text-center ${selectedOption === option.label ? 'border border-primary shadow' : 'border'}`}
-                          style={{ width: '20rem', cursor: 'pointer' }}
-                          onClick={() => setSelectedOption(option.label)}
-                        >
-                          <div>{option.label}</div>
-                        </div>
-                      ))}
+                <div className="d-flex flex-wrap gap-4 justify-content-center mb-4">
+                  {questions[currentQuestion].options.map((option, index) => (
+                    <div
+                      key={index}
+                      className={`option-card p-4 rounded-3 text-center shadow-sm ${
+                        selectedOption === option.label ? "border border-primary shadow-lg bg-light" : "border bg-white"
+                      }`}
+                      style={{ width: "160px", cursor: "pointer", transition: "all 0.3s" }}
+                      onClick={() => setSelectedOption(option.label)}
+                    >
+                      {option.image && (
+                        <img
+                          src={option.image}
+                          alt={option.label}
+                          className="img-fluid rounded mb-3"
+                          style={{ maxHeight: "4rem" }}
+                        />
+                      )}
+                      <div className="fw-semibold text-secondary">{option.label}</div>
+                    </div>
+                  ))}
                 </div>
-
                 <div className="d-flex justify-content-between">
-                  <Button
-                    className="mt-3 px-4 py-2"
-                    onClick={handleSkip}
-                  >
+                  <Button className="mt-3 px-4 py-2 btn-outline-secondary" onClick={handleSkip}>
                     Skip
                   </Button>
                   <Button
-                    className="mt-3 px-4 py-2"
+                    className="mt-3 px-4 py-2 btn-primary text-white"
                     onClick={handleNext}
                     disabled={!selectedOption}
                   >
-                    {currentQuestion < questions.length - 1 ? 'Next' : 'Submit'}
+                    {currentQuestion < questions.length - 1 ? "Next" : "Submit"}
                   </Button>
                 </div>
               </>
+            ) : (
+              <h3 className="text-center">No questions available for {serviceType}.</h3>
             )}
           </CardContent>
         </Card>
