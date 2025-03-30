@@ -27,7 +27,7 @@ router.get("/orders/:userId", async (req, res) => {
                     title: `Order ${order.orderId}`, // Modify if actual title exists
                     status: order.status,
                     amount: order.amount,
-                    workerName: profile ? profile.username : "Unknown",
+                    userName: order.userName,
                     receiptUrl: `/receipts/${order.orderId}.pdf`, // Adjust as needed
                     phases: ["Order Placed", "In Progress", "Checking Phase", "Completed"],
                     currentPhase: order.status === "Completed" ? 3 : 1,

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios'; // Import Axios for HTTP requests
+import axios from 'axios'; 
 import WeSkillNavbar from './MainNavbar';
 import { useAuth } from '../AuthContext';
 export default function JobSeekerQ() {
@@ -95,7 +95,7 @@ export default function JobSeekerQ() {
               }
             }
           );
-          
+          localStorage.setItem('profileId',response.data.profile._id);
           navigate('/job-seeker');
         } catch (error) {
           console.error('Full error details:', {
@@ -112,7 +112,7 @@ export default function JobSeekerQ() {
         }
       };
   };
-  const profileId = localStorage.setItem('profileId');
+ 
   
   return (
     <div>

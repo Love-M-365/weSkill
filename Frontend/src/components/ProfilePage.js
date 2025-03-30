@@ -8,46 +8,51 @@ const ProfileList = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // State for profiles and loading status
   const [profiles, setProfiles] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [currentIndex, setCurrentIndex] = useState(0); // Track current profile index
+  const [currentIndex, setCurrentIndex] = useState(0); 
 
-  // Get selectedField and answers from previous page
   const { selectedField, answers } = location.state || {
-    selectedField: { name: "All Profiles", description: "Browse the best talent" },
+    selectedField: {  },
     answers: {},
   };
-
   const fetchProfiles = async () => {
     try {
-      setLoading(true);
+        setLoading(true);
+        console.log(answers);
+        // Extract category correctly
+        const categoryValue = selectedField?.selectedField || selectedField || "Web Development";
 
-      // Prepare the request payload
-      const filters = {
-        category: selectedField || "Web Development",
-        ...(Object.keys(answers || {}).length > 0 && { filters: answers }),
-      };
+        // Extract answer from the 3rd question
+        const thirdQuestionAnswer = answers?.[0]; // Ensure answers object exists
 
-      console.log("Filters sent to API:", filters);
+        // Prepare filters object
+        const filters = {
+            category: categoryValue,
+            ...(thirdQuestionAnswer && {
+                badges: { $in: [thirdQuestionAnswer] }
+            }),
+            ...(Object.keys(answers || {}).length > 0 && { filters: answers }),
+        };
 
-      // API call
-      const response = await axios.post(
-        "http://localhost:5000/api/profiles/filter",
-        filters
-      );
+        console.log("Filters sent to API:", filters);
 
-      console.log("Fetched profiles:", response.data);
-      setProfiles(response.data || []); // Assuming response.data is the array of profiles
+        // API call
+        const response = await axios.post(
+            "http://localhost:5000/api/profiles/filter",
+            filters
+        );
+
+        console.log("Fetched profiles:", response.data);
+        setProfiles(response.data || []); 
     } catch (error) {
-      console.error("Error fetching profiles:", error);
-      setProfiles([]); // Handle empty state on error
+        console.error("Error fetching profiles:", error);
+        setProfiles([]); 
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
-
-  useEffect(() => {
+};
+useEffect(() => {
     fetchProfiles();
   }, []);
 

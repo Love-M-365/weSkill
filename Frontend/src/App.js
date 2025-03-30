@@ -22,6 +22,7 @@ import { AuthProvider } from './AuthContext';
 import WelcomeMsg from './components/WelcomeMsg';
 import Profiles from './components/Profiles';
 import SuccessPage from './components/Orderplaced';
+import CommentForm from './components/CommentForm';
 
 
 const App = () => {
@@ -46,6 +47,7 @@ const App = () => {
           <Route path="/welcomemsg" element={<WelcomeMsg />} />
           <Route path="/profilesDS" element={<Profiles />} />
           <Route path="/success" element={<SuccessPage />} />
+          <Route path="/comment" element={<CommentForm />} />
           
           
 

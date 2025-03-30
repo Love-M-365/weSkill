@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Card, CardContent } from "./Card";
 import WeSkillNavbar from "./MainNavbar";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const allQuestions = {
   "Web Development": [
@@ -27,12 +27,12 @@ const allQuestions = {
       ],
     },
     {
-      question: "Additional Services",
+      question: "Job seeker traits",
       options: [
-        { label: "Responsive Design" },
-        { label: "Website Optimization (Speed, SEO, Security)" },
-        { label: "Payment Gateway Setup" },
-        { label: "Other" },
+        { label: "dedicated" },
+        { label: "punctual" },
+        { label: "Best work" },
+        { label: "budget friendly" },
       ],
     },
   ],
@@ -58,12 +58,10 @@ const Questionnaire = () => {
   const navigate = useNavigate();
 
   const questions = allQuestions[serviceType] || [];
-
+  const location =useLocation();
+  const selectedField = location.state || {};
   const handleNext = () => {
-    if (!selectedOption) {
-      alert("Please select an option before proceeding.");
-      return;
-    }
+  
 
     // Use functional updates to ensure the latest state
     setAnswers((prevAnswers) => ({
@@ -80,10 +78,11 @@ const Questionnaire = () => {
       console.log("User Responses:", { ...answers, [questions[currentQuestion].question]: selectedOption });
       navigate("/profilesDS", { state: { serviceType, answers: { ...answers, [questions[currentQuestion].question]: selectedOption } } });
     }
+    
   };
 
   const handleSkip = () => {
-    navigate("/profiles");
+    navigate("/profiles",{state:{selectedField}});
   };
 
   return (
@@ -120,7 +119,7 @@ const Questionnaire = () => {
                   ))}
                 </div>
                 <div className="d-flex justify-content-between">
-                  <Button className="mt-3 px-4 py-2 btn-outline-secondary" onClick={handleSkip}>
+                  <Button className="mt-3 px-4 py-2 btn-dark " onClick={handleSkip}>
                     Skip
                   </Button>
                   <Button

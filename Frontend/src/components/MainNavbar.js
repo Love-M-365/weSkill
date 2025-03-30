@@ -22,7 +22,7 @@ const WeSkillNavbar = () => {
       navigate("/questionnaire");
     } else {
      
-      navigate(`/job-Seeker`);
+    navigate("/job-Seeker");
       
     }
 };

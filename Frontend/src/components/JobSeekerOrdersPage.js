@@ -1,83 +1,123 @@
-import React from 'react';
-import { Card, Button, ListGroup, Badge, Row, Col, ProgressBar } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Card, Button, ListGroup, Badge, Row, Col } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import WeSkillNavbar from './MainNavbar';
-import avtar from './photos/avtar.png'
-const JobSeekerProfile = () => {
-  // Sample data for tasks and messages
-  const pendingTasks = [
-    { id: 1, title: 'Complete Data Analysis Report', dueDate: '2025-03-20', status: 'In Progress', progress: 60 },
-    { id: 2, title: 'Update Website Design', dueDate: '2025-03-25', status: 'Awaiting Response', progress: 20 },
-    { id: 3, title: 'Write Blog Post', dueDate: '2025-03-22', status: 'In Progress', progress: 40 },
-  ];
+import avtar from './photos/avtar.png';
+import axios from 'axios';
 
-  const messages = [
-    { id: 1, provider: 'Diya Gupta', message: 'I have a new task for you.', unread: true },
-    { id: 2, provider: 'Kabir Singhaniya', message: 'Are you available to start today?', unread: false },
-    { id: 3, provider: 'Arya Veer Singh', message: 'I need an update on your progress.', unread: true },
-  ];
+const JobSeekerProfile = () => {
+  const [orders, setOrders] = useState([]);
+  const [comments, setComments] = useState([]);
+  const navigate = useNavigate();
+
+  const profileId = localStorage.getItem('profileId');
+  const token = localStorage.getItem('token') 
+
+  // Fetch Profile Data (which contains orders)
+  useEffect(() => {
+    axios.get('http://localhost:5000/api/profiles/my-profile', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },{ withCredentials: true })
+      .then(response => {
+        setOrders(response.data.profile.orders || []); 
+      })
+      .catch(error => console.error('Error fetching profile:', error));
+  }, []);
+  console.log(orders);
+  // Fetch Comments
+  useEffect(() => {
+    if (profileId) {
+      axios.get(`http://localhost:5000/api/comments/comments/${profileId}`)
+        .then(response => setComments(response.data))
+        .catch(error => console.error('Error fetching comments:', error));
+    }
+  }, [profileId]);
 
   return (
     <>
-    <WeSkillNavbar></WeSkillNavbar>
-   
-    <div className="container-fluid mt-4">
-      <h2 className="text-center mb-5">Job Seeker Dashboard</h2>
+      <WeSkillNavbar />
+      <div className="container-fluid mt-4">
+        <h2 className="text-center mb-5">Job Seeker Dashboard</h2>
 
-      <Row className="g-4">
-        {/* Main Content Area */}
-        <Col xs={12}>
-          <Row>
-            {/* Pending Tasks Section */}
-            <Col xs={12} md={6} className="mb-4">
-              <Card className="shadow-lg">
-                <Card.Body>
-                  <Card.Title className="text-center">Pending Tasks</Card.Title>
-                  <ListGroup variant="flush">
-                    {pendingTasks.map((task) => (
-                      <ListGroup.Item key={task.id} className="d-flex justify-content-between align-items-center">
-                        <div>
-                          <h5 className="mb-1">{task.title}</h5>
-                          <p className="mb-1 text-muted">Due Date: <strong>{task.dueDate}</strong></p>
-                          <p>Status: <span className={`badge ${task.status === 'In Progress' ? 'bg-info' : task.status === 'Completed' ? 'bg-success' : 'bg-warning'}`}>{task.status}</span></p>
-                          <ProgressBar now={task.progress} label={`${task.progress}%`} />
-                        </div>
-                        <Button variant="primary" size="sm" className="btn btn-primary">Mark as Complete</Button>
-                      </ListGroup.Item>
-                    ))}
-                  </ListGroup>
-                </Card.Body>
-              </Card>
-            </Col>
-            
-            {/* Chat Notifications Section */}
-            <Col xs={12} md={6} className="mb-4">
-              <Card className="shadow-lg">
-                <Card.Body>
-                  <Card.Title className="text-center">Messages from Job Providers</Card.Title>
-                  <ListGroup variant="flush">
-                    {messages.map((message) => (
-                      <ListGroup.Item key={message.id} className={`d-flex justify-content-between align-items-center ${message.unread ? 'bg-light' : ''}`}>
-                        <div className="d-flex align-items-center">
-                          <div className="avatar me-3">
-                            <img src={avtar} alt="avatar" style={{maxHeight:"2rem",maxWidth:"2rem"}} className="rounded-circle" />
+        <Row className="g-4">
+          <Col xs={12}>
+            <Row>
+              {/* Orders Section */}
+              <Col xs={12} md={6} className="mb-4">
+                <Card className="shadow-lg">
+                  <Card.Body>
+                    <Card.Title className="text-center">Your Orders</Card.Title>
+                    <ListGroup variant="flush">
+                      {orders.length > 0 ? (
+                        orders.map(order => (
+                          <ListGroup.Item key={order.orderId} className="d-flex justify-content-between align-items-center">
+                            <div>
+                              <h5 className="mb-1">Order ID: {order.orderId}</h5>
+                              <p className="mb-1">Amount: ₹{order.amount}</p>
+                              <p>Status: <span className={`badge ${order.status === 'In Progress' ? 'bg-info' : 'bg-success'}`}>{order.status}</span></p>
+                            </div>
+                          </ListGroup.Item>
+                        ))
+                      ) : (
+                        <p className="text-center text-muted">No orders found</p>
+                      )}
+                    </ListGroup>
+                  </Card.Body>
+                </Card>
+              </Col>
+
+              {/* Messages Section */}
+              <Col xs={12} md={6} className="mb-4">
+                <Card className="shadow-lg">
+                  <Card.Body>
+                    <Card.Title className="text-center">Messages</Card.Title>
+                    <ListGroup variant="flush">
+                      {orders.map(order => (
+                        <ListGroup.Item key={order.orderId} className="d-flex justify-content-between align-items-center">
+                          <div className="d-flex align-items-center">
+                            <img src={avtar} alt="avatar" style={{ maxHeight: "2rem", maxWidth: "2rem" }} className="rounded-circle me-3" />
+                            <h6 className="mb-1">{order.userName}</h6>
                           </div>
-                          <div>
-                            <h6 className="mb-1">{message.provider}</h6>
-                            <p className="mb-1">{message.message}</p>
-                          </div>
-                        </div>
-                        {message.unread && <Badge pill bg="danger" className="align-self-start">New</Badge>}
-                        <Button variant="primary" size="sm" className=" btn btn-success" style={{ padding: '6px 12px' }}>Open Chat</Button>
-                      </ListGroup.Item>
-                    ))}
-                  </ListGroup>
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-        </Col>
-      </Row>
-    </div>
+                          <Button 
+                            variant="primary" 
+                            size="sm" 
+                            className="btn btn-success"
+                            onClick={() => navigate(`/chat/${order.userName}`)}
+                          >
+                            Open Chat
+                          </Button>
+                        </ListGroup.Item>
+                      ))}
+                    </ListGroup>
+                  </Card.Body>
+                </Card>
+              </Col>
+
+              {/* Comments Section */}
+              <Col xs={12} className="mb-4">
+                <Card className="shadow-lg">
+                  <Card.Body>
+                    <Card.Title className="text-center">Comments</Card.Title>
+                    <ListGroup variant="flush">
+                      {comments.length > 0 ? (
+                        comments.map((comment, index) => (
+                          <ListGroup.Item key={index}>
+                            {comment.text}
+                          </ListGroup.Item>
+                        ))
+                      ) : (
+                        <p className="text-center text-muted">No comments found</p>
+                      )}
+                    </ListGroup>
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+      </div>
     </>
   );
 };

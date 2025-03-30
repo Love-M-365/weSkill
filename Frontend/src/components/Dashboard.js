@@ -81,6 +81,7 @@ const Dashboard = () => {
 
     const handleCardClick = (field) => {
         navigate('/aiquestions', { state: { selectedField: field.name } });
+        console.log(field.name);
     };
 
     const handleCloseModal = () => {

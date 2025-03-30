@@ -3,9 +3,9 @@ const Profile = require("../models/Profile");
 
 const placeOrder = async (req, res) => {
     try {
-        const { userId, orderId, amount, profileId } = req.body;
+        const { userId, orderId, amount, profileId ,profileHandler } = req.body;
 
-        if (!userId || !orderId || !amount || !profileId) {
+        if (!userId || !orderId || !amount || !profileId || !profileHandler) {
             return res.status(400).json({ success: false, message: "Missing required fields" });
         }
 
@@ -25,7 +25,7 @@ const placeOrder = async (req, res) => {
         const newOrder = { 
             orderId, 
             amount, 
-            status: "In Progress",
+            status: "Completed",
             userName: user.name,           // Add user's name to profile orders
             profileHandler: profile.name   // Add profile name to user orders
         };

@@ -43,6 +43,10 @@ export default function RegisterPage() {
           localStorage.setItem('userId', data.user._id);
           localStorage.setItem('name', data.user.name);
           console.log("Token stored in localStorage:", token);
+          if (data.profileId) {
+            localStorage.setItem('profileId', data.profileId); 
+            
+        }
         } else {
           console.error("No token received in response.");
         }

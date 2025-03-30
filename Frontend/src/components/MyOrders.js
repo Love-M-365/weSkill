@@ -2,17 +2,28 @@ import React, { useEffect, useState } from "react";
 import { Button, Card, CardContent } from "./Card";
 import { ProgressBar } from "react-bootstrap";
 import WeSkillNavbar from "./MainNavbar";
+import { useNavigate } from 'react-router-dom'; 
 import axios from "axios";
 
 const OrdersPage = () => {
     const [orders, setOrders] = useState([]);
     const userId = localStorage.getItem('userId');
+    const navigate = useNavigate();
+    const handleComment = async () => {
+        const profileId = localStorage.getItem("profileId");
+       
+         
+        navigate("/comment",{state : {profileId}});
+     
+        };
+    
 
     useEffect(() => {
         const fetchOrders = async () => {
             try {
                 const response = await axios.get(`http://localhost:5000/api/orders/orders/${userId}`);
                 setOrders(response.data.orders);
+
             } catch (error) {
                 console.error("Error fetching orders:", error);
             }
@@ -20,7 +31,8 @@ const OrdersPage = () => {
 
         fetchOrders();
     }, []);
-
+    console.log(orders);
+    
     return (
         <>
             <WeSkillNavbar />
@@ -58,10 +70,10 @@ const OrdersPage = () => {
                                                 ))}
                                             </div>
                                         </div>
-                                        <p className="text-muted mb-3">Assigned to: <strong>{order.assignedTo}</strong></p>
+                                        <p className="text-muted mb-3">Assigned to: <strong>{order.userName}</strong></p>
                                         {order.status === "Completed" ? (
                                             <div className="d-flex gap-2">
-                                                <Button variant="outline-primary" className="w-20">📝 Comment</Button>
+                                                <Button variant="outline-primary" className="w-20" onClick={handleComment}>📝 Comment</Button>
                                                 <Button variant="outline-secondary" className="w-20">🔎 View Work</Button>
                                                 <a href={order.receiptUrl} download>
                                                     <Button variant="outline-success" className="w-20">💳 Download Receipt</Button>

@@ -37,7 +37,7 @@ const Profiles = () => {
               </button>
               <button
                 className="btn btn-success"
-                onClick={() => alert("Submit functionality can be implemented here!")}
+                onClick={() => navigate("/profiles",{state:{serviceType,answers}})}
               >
                 Confirm & Submit
               </button>

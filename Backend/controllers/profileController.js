@@ -33,7 +33,7 @@ exports.createProfile = async (req, res) => {
       };
   
       // Validate required fields
-      const requiredFields = ['userId', 'fullName', 'typeOfWork', 'primarySkill', 'highestQualification', 'fieldOfStudy', 'bio','upiID','badges'];
+      const requiredFields = ['userId', 'fullName', 'typeOfWork', 'primarySkill', 'highestQualification', 'fieldOfStudy', 'bio','upiID'];
       const missingFields = requiredFields.filter(field => !profileData[field] || (Array.isArray(profileData[field]) && profileData[field].length === 0));
   
       if (missingFields.length > 0) {
@@ -105,7 +105,7 @@ exports.deleteProfile = async (req, res) => {
 exports.getMyProfile = async (req, res) => {
     try {
       const profile = await Profile.findOne({ userId: req.user.id })
-        .select('fullName typeOfWork primarySkill highestQualification fieldOfStudy additionalSkills preferredWorkLocation bio upiID links profilePhoto badges')
+        .select('fullName typeOfWork primarySkill highestQualification fieldOfStudy additionalSkills preferredWorkLocation bio upiID links profilePhoto badges orders')
         .lean();
   
       if (!profile) {
@@ -149,53 +149,53 @@ exports.checkProfile = async (req, res) => {
 };
 exports.filterProfiles = async (req, res) => {
     try {
-      const { category, filters } = req.body;
-      console.log("Category:", category);
-      console.log("Filters:", filters);
-  
-      // Build the query
-      const query = {
-        $or: [
-          { category }, // Match category
-          { additionalSkills: { $regex: new RegExp(category, "i") } }, // Match in additionalSkills (case-insensitive)
-        ],
-      };
-  
-      // Add additional filters if provided
-      if (filters) {
-        query.$and = []; // Add additional filters using $and
-  
-        // Filter by primarySkills
-        if (filters.primarySkills) {
-          query.$and.push({ primarySkills: { $in: filters.primarySkills } });
+        const { category, filters } = req.body;
+        console.log("Category:", category);
+        console.log("Filters:", filters);
+
+        // Extract category name if it's an object
+        const categoryName = typeof category === 'object' && category?.name ? category.name : category;
+
+        // Build the query
+        const query = {
+            additionalSkills: { $in: [categoryName] }, // Ensures category is within additionalSkills array
+        };
+
+        // Add additional filters if provided
+        if (filters) {
+            query.$and = [];
+
+            if (filters.primarySkills) {
+                query.$and.push({ primarySkill: { $in: filters.primarySkills } });
+            }
+            if (filters.rating) {
+                query.$and.push({ rating: { $gte: filters.rating } });
+            }
+            if (filters.badges) {
+                query.$and.push({ badges: { $in: filters.badges } });
+            }
+
+            // Remove $and if it's empty
+            if (query.$and.length === 0) {
+                delete query.$and;
+            }
         }
-  
-        // Filter by rating
-        if (filters.rating) {
-          query.$and.push({ rating: { $gte: filters.rating } });
+
+        console.log("MongoDB Query:", JSON.stringify(query, null, 2));
+
+        // Fetch profiles
+        const profiles = await Profile.find(query);
+        if (!profiles.length) {
+            return res.status(404).json({ message: "No profiles found" });
         }
-  
-        // Filter by badges
-        if (filters.badges) {
-          query.$and.push({ badges: { $in: filters.badges } });
-        }
-      }
-  
-      console.log("MongoDB Query:", query);
-  
-      // Fetch profiles based on the query
-      const profiles = await Profile.find(query);
-      if (!profiles || profiles.length === 0) {
-        return res.status(404).json({ message: "No profiles found" });
-      }
-  
-      console.log("Matched Profiles:", profiles);
-      res.status(200).json(profiles);
+
+        res.status(200).json(profiles);
     } catch (error) {
-      console.error("Error in filterProfiles Controller:", error.message);
-      res.status(500).json({ message: "An error occurred", error: error.message });
+        console.error("Error in filterProfiles Controller:", error.message);
+        res.status(500).json({ message: "An error occurred", error: error.message });
     }
-  };
+};
+
 exports.getProfileById = async (req, res) => {
     const { id } = req.params; 
   
