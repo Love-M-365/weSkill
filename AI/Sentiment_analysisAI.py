@@ -8,13 +8,13 @@ from sklearn.pipeline import make_pipeline
 import pandas as pd
 
 # Load dataset
-df = pd.read_csv("DataSet.csv")
+df = pd.read_csv("C:\\Users\\devma\\OneDrive\\Documents\\Desktop\\weSkill\\AI\\DataSet.csv")
 
 # Check if data is properly loaded
 print(df.head())
 
 # Load trained model
-model = joblib.load("sentiment_model.pkl")
+model = joblib.load("C:\\Users\\devma\\OneDrive\\Documents\\Desktop\\weSkill\\sentiment_model.pkl")
 
 # Load SpaCy model for text processing
 nlp = spacy.load("en_core_web_sm")

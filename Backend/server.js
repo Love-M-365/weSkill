@@ -7,6 +7,7 @@ const profileRoutes = require('./routes/profileRoutes');
 const workRoutes = require('./routes/workRoutes');
 const commentRoutes = require('./routes/commentRoutes');
 const paymentRoutes =require('./routes/paymentRoutes')
+const ordersRoutes =require('./routes/ordersRoutes')
 
 const app = express();
 
@@ -21,17 +22,14 @@ app.use(
     credentials: true, // If using cookies or auth headers
   })
 );
-
-// Middleware to parse JSON request bodies
 app.use(express.json());
 
-// Define routes
 app.use('/api/auth', authRoutes);
 app.use('/api/profiles', profileRoutes);
 app.use('/api/works', workRoutes);
 app.use('/api/comments', commentRoutes);
 app.use("/api/placeOrder", paymentRoutes);
+app.use("/api/orders", ordersRoutes);
 
-// Start the server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

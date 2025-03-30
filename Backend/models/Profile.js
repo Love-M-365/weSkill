@@ -76,12 +76,12 @@ const ProfileSchema = new mongoose.Schema({
   },
   orders: [
     {
-      orderId: String,
-      amount: Number,
-      status: String, 
-      createdAt: { type: Date, default: Date.now },
-    },
-  ],
+        orderId: { type: String, required: true },
+        amount: { type: Number, required: true },
+        status: { type: String, default: "In Progress" },
+        userName: { type: String } 
+    }
+],
   createdAt: {
     type: Date,
     default: Date.now,

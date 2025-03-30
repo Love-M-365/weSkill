@@ -2,49 +2,48 @@ const User = require("../models/User");
 const Profile = require("../models/Profile");
 
 const placeOrder = async (req, res) => {
-  try {
-    const { userId, orderId, amount, profileId } = req.body;
+    try {
+        const { userId, orderId, amount, profileId } = req.body;
 
-    // Find the user by ID
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ success: false, message: "User not found" });
+        if (!userId || !orderId || !amount || !profileId) {
+            return res.status(400).json({ success: false, message: "Missing required fields" });
+        }
+
+        // Find User and Profile
+        const user = await User.findById(userId);
+        const profile = await Profile.findById(profileId);
+
+        if (!user || !profile) {
+            return res.status(404).json({ success: false, message: "User or Profile not found" });
+        }
+
+        // Ensure arrays exist
+        if (!user.ordersPlaced) user.ordersPlaced = [];
+        if (!profile.orders) profile.orders = [];
+
+        // Create new order object
+        const newOrder = { 
+            orderId, 
+            amount, 
+            status: "In Progress",
+            userName: user.name,           // Add user's name to profile orders
+            profileHandler: profile.name   // Add profile name to user orders
+        };
+
+        // Push order into respective arrays
+        user.ordersPlaced.push(newOrder);
+        profile.orders.push(newOrder);
+
+        // Save both documents
+        await user.save();
+        await profile.save();
+
+        res.json({ success: true, message: "Order placed successfully!", userOrders: user.ordersPlaced, profileOrders: profile.orders });
+
+    } catch (error) {
+        console.error("Error in placeOrder:", error);
+        res.status(500).json({ success: false, message: "Internal server error" });
     }
-
-    // Find the profile by profileId
-    const profile = await Profile.findById(profileId);
-    if (!profile) {
-      return res.status(404).json({ success: false, message: "Profile not found" });
-    }
-
-    // Create a new order
-    const newOrder = {
-      orderId,
-      amount,
-      status: "Completed",
-    };
-
-    // Add the order to the user's orders array
-    user.orders.push(newOrder);
-
-    // Add the order to the profile's orders array
-    profile.orders.push(newOrder);
-
-    // Save the updated user and profile
-    await user.save();
-    await profile.save();
-
-    // Send response
-    res.json({
-      success: true,
-      message: "Order placed successfully",
-      userOrders: user.orders,
-      profileOrders: profile.orders,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: "Internal server error" });
-  }
 };
 
 module.exports = { placeOrder };

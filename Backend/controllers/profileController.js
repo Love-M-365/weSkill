@@ -28,11 +28,12 @@ exports.createProfile = async (req, res) => {
         links: req.body.links,
         bio: req.body.bio,
         upiID: req.body.upiID,
-        profilePhoto: req.file ? req.file.path : null
+        profilePhoto: req.file ? req.file.path : null,
+        badges: req.body.badges
       };
   
       // Validate required fields
-      const requiredFields = ['userId', 'fullName', 'typeOfWork', 'primarySkill', 'highestQualification', 'fieldOfStudy', 'bio','upiID'];
+      const requiredFields = ['userId', 'fullName', 'typeOfWork', 'primarySkill', 'highestQualification', 'fieldOfStudy', 'bio','upiID','badges'];
       const missingFields = requiredFields.filter(field => !profileData[field] || (Array.isArray(profileData[field]) && profileData[field].length === 0));
   
       if (missingFields.length > 0) {
@@ -104,7 +105,7 @@ exports.deleteProfile = async (req, res) => {
 exports.getMyProfile = async (req, res) => {
     try {
       const profile = await Profile.findOne({ userId: req.user.id })
-        .select('fullName typeOfWork primarySkill highestQualification fieldOfStudy additionalSkills preferredWorkLocation bio upiID links profilePhoto')
+        .select('fullName typeOfWork primarySkill highestQualification fieldOfStudy additionalSkills preferredWorkLocation bio upiID links profilePhoto badges')
         .lean();
   
       if (!profile) {

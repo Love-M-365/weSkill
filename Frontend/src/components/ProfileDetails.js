@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation,useNavigate } from 'react-router-dom';
 import { FaStar, FaBriefcase, FaCheckCircle, FaUser } from 'react-icons/fa';
 import { Button } from 'react-bootstrap';
 import WeSkillNavbar from './MainNavbar';
@@ -15,6 +15,8 @@ const ProfileDetails = () => {
   const [pricingDetails, setPricingDetails] = useState([]);
   const location = useLocation();
   const { profileId } = location.state || {};
+  let navigate=useNavigate();
+  const userId =localStorage.getItem('userId');
 
   const showToast = (type, message) => {
     setToast({ type, message });
@@ -32,24 +34,24 @@ const ProfileDetails = () => {
         setWorks(worksResponse.data);
         console.log(worksResponse.data)
         const pricing = worksResponse.data.map((work) => ({
-          level: work.category,
-          price: {
-            basic: `₹${work.basic.amount}`,
-            standard: `₹${work.standard.amount}`,
-            premium: `₹${work.premium.amount}`,
-          },
-          time: {
-            basic: `${work.basic.time} days`,
-            standard: `${work.standard.time} days`,
-            premium: `${work.premium.time} days`,
-          },
-          features: {
-            basic: work.basic.specs,
-            standard: work.standard.specs,
-            premium: work.premium.specs,
-          },
-        }));
-        setPricingDetails(pricing);
+            level: work.category,
+            price: {
+              basic: `₹${work.basic.amount}`,
+              standard: `₹${work.standard.amount}`,
+              premium: `₹${work.premium.amount}`,
+            },
+            time: {
+              basic: `${work.basic.time} days`,
+              standard: `${work.standard.time} days`,
+              premium: `${work.premium.time} days`,
+            },
+            features: {
+              basic: work.basic.specs,
+              standard: work.standard.specs,
+              premium: work.premium.specs,
+            },
+          }));
+          setPricingDetails(pricing);
       } catch (error) {
         showToast('error', 'Failed to fetch profile details or works.');
         console.error('Error:', error);
@@ -66,6 +68,7 @@ const ProfileDetails = () => {
       </div>
     );
   }
+
 
   return (
     <>
@@ -155,7 +158,16 @@ const ProfileDetails = () => {
                         : "btn-success"
                     } w-100 fw-bold`}
                     onClick={() =>
-                      alert(`Proceeding to pay for the ${planType} plan.`)
+                     
+                      navigate('/paymentpage',{
+                        state: {
+                          upiId: "ishmalikbps@oksbi",
+                          paymentAmount: 1,
+                          orderId: "order123",
+                          profileId,
+                          userId
+                        },
+                      })
                     }
                   >
                     Select {planType} Plan

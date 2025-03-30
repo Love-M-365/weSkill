@@ -95,7 +95,7 @@ export default function JobSeekerQ() {
               }
             }
           );
-          const profileId = localStorage.setItem('profileId');
+          
           navigate('/job-seeker');
         } catch (error) {
           console.error('Full error details:', {
@@ -112,6 +112,7 @@ export default function JobSeekerQ() {
         }
       };
   };
+  const profileId = localStorage.setItem('profileId');
   
   return (
     <div>

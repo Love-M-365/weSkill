@@ -21,6 +21,7 @@ import PaymentPage from './components/PaymentPage';
 import { AuthProvider } from './AuthContext';
 import WelcomeMsg from './components/WelcomeMsg';
 import Profiles from './components/Profiles';
+import SuccessPage from './components/Orderplaced';
 
 
 const App = () => {
@@ -44,6 +45,7 @@ const App = () => {
           <Route path="/paymentpage" element={<PaymentPage />} />
           <Route path="/welcomemsg" element={<WelcomeMsg />} />
           <Route path="/profilesDS" element={<Profiles />} />
+          <Route path="/success" element={<SuccessPage />} />
           
           
 

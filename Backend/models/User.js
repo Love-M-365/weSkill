@@ -64,12 +64,12 @@ const userSchema = new mongoose.Schema(
     },
     ordersPlaced: [
         {
-          orderId: String,
-          amount: Number,
-          status: String,
-          createdAt: { type: Date, default: Date.now },
-        },
-      ],
+            orderId: { type: String, required: true },
+            amount: { type: Number, required: true },
+            status: { type: String, default: "In Progress" },
+            profileHandler: { type: String } 
+        }
+    ],
     createdAt: {
       type: Date,
       default: Date.now,

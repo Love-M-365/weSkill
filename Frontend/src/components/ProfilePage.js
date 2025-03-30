@@ -91,76 +91,62 @@ const ProfileList = () => {
         <p>{selectedField?.description || "Explore some sample profiles to get started."}</p>
 
         {loading ? (
-          <p className="text-center">Loading profiles...</p>
-        ) : profiles.length > 0 ? (
-          <div
-            className="card shadow-sm p-3 mb-3 profile-card"
-            onClick={() => handleProfileClick(profiles[currentIndex])}
-          >
-            <div className="d-flex align-items-center">
-              <div className="profile-pic me-3">
-                <FaUser className="text-white" size={40} />
-              </div>
-              <div className="flex-grow-1">
-                <h5 className="mb-1">{profiles[currentIndex].fullName}</h5>
-                <p className="text-muted mb-2" style={{ fontStyle: "italic" }}>
-                  {profiles[currentIndex].bio || "No bio available"}
-                </p>
-                <div className="d-flex align-items-center text-muted mb-2">
-                  <FaBriefcase className="text-success me-1" size={18} />
-                  <span>{profiles[currentIndex].typeOfWork || "N/A"}</span>
-                </div>
+  <p className="text-center">Loading profiles...</p>
+) : profiles.length > 0 ? (
+  <div className="list-group">
+    {profiles.map((profile, index) => (
+      <div
+        key={index}
+        className="list-group-item list-group-item-action shadow-sm p-3 mb-3 profile-card"
+        onClick={() => handleProfileClick(profile)}
+      >
+        <div className="d-flex align-items-center">
+          <div className="profile-pic me-3">
+            <FaUser className="text-white" size={40} />
+          </div>
+          <div className="flex-grow-1">
+            <h5 className="mb-1">{profile.fullName}</h5>
+            <p className="text-muted mb-2" style={{ fontStyle: "italic" }}>
+              {profile.bio || "No bio available"}
+            </p>
+            <div className="d-flex align-items-center text-muted mb-2">
+              <FaBriefcase className="text-success me-1" size={18} />
+              <span>{profile.typeOfWork || "N/A"}</span>
+            </div>
 
-                {/* Display ratings */}
-                <div className="d-flex align-items-center mb-2">
-                  <span className="me-2">Rating:</span>
-                  {renderRatingStars(profiles[currentIndex].rating || 0)}
-                </div>
+            {/* Display ratings */}
+            <div className="d-flex align-items-center mb-2">
+              <span className="me-2">Rating:</span>
+              {renderRatingStars(profile.rating || 0)}
+            </div>
 
-                {/* Display preferred work location */}
-                <p className="text-muted mb-2">
-                  Preferred Work Location: {profiles[currentIndex].preferredWorkLocation || "N/A"}
-                </p>
+            {/* Display preferred work location */}
+            <p className="text-muted mb-2">
+              Preferred Work Location: {profile.preferredWorkLocation || "N/A"}
+            </p>
 
-                {/* Display additional skills */}
-                <div className="d-flex flex-wrap">
-                  <FaTags className="text-secondary me-2" size={18} />
-                  {profiles[currentIndex].badges?.length > 0 ? (
-                    profiles[currentIndex].badges.map((badge, i) => (
-                      <span key={i} className="badge bg-primary me-2 mb-1">
-                        {badge}
-                      </span>
-                    ))
-                  ) : (
-                    <span className="text-muted">0 badges earned</span>
-                  )}
-                </div>
-              </div>
+            {/* Display additional skills */}
+            <div className="d-flex flex-wrap">
+              <FaTags className="text-secondary me-2" size={18} />
+              {profile.badges?.length > 0 ? (
+                profile.badges.map((badge, i) => (
+                  <span key={i} className="badge bg-primary me-2 mb-1">
+                    {badge}
+                  </span>
+                ))
+              ) : (
+                <span className="text-muted">0 badges earned</span>
+              )}
             </div>
           </div>
-        ) : (
-          <p className="text-center">No profiles found.</p>
-        )}
+        </div>
+      </div>
+    ))}
+  </div>
+) : (
+  <p className="text-center">No profiles found.</p>
+)}
 
-        {/* Navigation buttons */}
-        {profiles.length > 1 && (
-          <div className="d-flex justify-content-between mt-4">
-            <button
-              className="btn btn-outline-primary"
-              onClick={handlePreviousProfile}
-              disabled={currentIndex === 0}
-            >
-              Previous
-            </button>
-            <button
-              className="btn btn-outline-primary"
-              onClick={handleNextProfile}
-              disabled={currentIndex === profiles.length - 1}
-            >
-              Next
-            </button>
-          </div>
-        )}
 
         <style jsx>{`
           .profile-pic {
