@@ -30,7 +30,7 @@ synonym_mapping = {
     "leadership": ["leader", "leadership", "influential", "inspiring", "mentor", "guiding", "motivating", "captain", "role model"],
     "teamwork": ["team player", "collaborative", "cooperative", "supportive", "cohesive", "group-oriented", "works well with others"],
     "innovative": ["innovative", "pioneering", "groundbreaking", "revolutionary", "cutting-edge", "forward-thinking", "inventive"],
-    "communication": ["communicative", "articulate", "expressive", "eloquent", "persuasive", "clear", "concise", "good speaker"],
+    "good communication": ["communication", "articulate", "expressive", "eloquent", "persuasive", "clear", "concise", "good speaker"],
     "problem-solving": ["problem solver", "solution-oriented", "troubleshooter", "resourceful", "analytical", "strategic thinker"]
 }
 
@@ -58,7 +58,8 @@ reviews = [
     "He is very friendly and kind towards others",
     "Ish is a problem solver",
     "Great work, value for money is satified",
-    "Suman is rude in nature"
+    "Suman is rude in nature",
+    "working with ram was an absolute pleasure they delievered high quality work on time . this communication was clear and he was always open to feedback "
 ]
 
 for review in reviews:
