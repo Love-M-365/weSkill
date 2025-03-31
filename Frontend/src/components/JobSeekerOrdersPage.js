@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Button, ListGroup, Badge, Row, Col } from 'react-bootstrap';
+import { Card, Button, ListGroup, Row, Col } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import WeSkillNavbar from './MainNavbar';
 import avtar from './photos/avtar.png';
 import axios from 'axios';
+
 
 const JobSeekerProfile = () => {
   const [orders, setOrders] = useState([]);
@@ -11,22 +12,18 @@ const JobSeekerProfile = () => {
   const navigate = useNavigate();
 
   const profileId = localStorage.getItem('profileId');
-  const token = localStorage.getItem('token') 
 
-  // Fetch Profile Data (which contains orders)
+  // ✅ Fetch orders using profileId
   useEffect(() => {
-    axios.get('http://localhost:5000/api/profiles/my-profile', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    },{ withCredentials: true })
-      .then(response => {
-        setOrders(response.data.profile.orders || []); 
-      })
-      .catch(error => console.error('Error fetching profile:', error));
-  }, []);
-  console.log(orders);
-  // Fetch Comments
+    if (profileId) {
+      axios.get(`http://localhost:5000/api/orders/orders/profile/${profileId}`)
+        .then(response => setOrders(response.data))
+        .catch(error => console.error('Error fetching orders:', error));
+    }
+    
+  }, [profileId]);
+  console.log(orders)
+  // ✅ Fetch comments using profileId
   useEffect(() => {
     if (profileId) {
       axios.get(`http://localhost:5000/api/comments/comments/${profileId}`)
@@ -44,7 +41,7 @@ const JobSeekerProfile = () => {
         <Row className="g-4">
           <Col xs={12}>
             <Row>
-              {/* Orders Section */}
+              {/* ✅ Orders Section */}
               <Col xs={12} md={6} className="mb-4">
                 <Card className="shadow-lg">
                   <Card.Body>
@@ -68,7 +65,7 @@ const JobSeekerProfile = () => {
                 </Card>
               </Col>
 
-              {/* Messages Section */}
+              {/* ✅ Messages Section */}
               <Col xs={12} md={6} className="mb-4">
                 <Card className="shadow-lg">
                   <Card.Body>
@@ -95,7 +92,7 @@ const JobSeekerProfile = () => {
                 </Card>
               </Col>
 
-              {/* Comments Section */}
+              {/* ✅ Comments Section */}
               <Col xs={12} className="mb-4">
                 <Card className="shadow-lg">
                   <Card.Body>

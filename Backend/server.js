@@ -7,7 +7,7 @@ const profileRoutes = require('./routes/profileRoutes');
 const workRoutes = require('./routes/workRoutes');
 const commentRoutes = require('./routes/commentRoutes');
 const paymentRoutes =require('./routes/paymentRoutes')
-const ordersRoutes =require('./routes/ordersRoutes')
+const placeOrder = require('./routes/placeOrderRoutes')
 
 const app = express();
 
@@ -29,7 +29,8 @@ app.use('/api/profiles', profileRoutes);
 app.use('/api/works', workRoutes);
 app.use('/api/comments', commentRoutes);
 app.use("/api/placeOrder", paymentRoutes);
-app.use("/api/orders", ordersRoutes);
+
+app.use("/api/orders",placeOrder);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

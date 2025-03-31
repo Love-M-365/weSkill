@@ -9,30 +9,39 @@ const OrdersPage = () => {
     const [orders, setOrders] = useState([]);
     const userId = localStorage.getItem('userId');
     const navigate = useNavigate();
-    const handleComment = async () => {
-        const profileId = localStorage.getItem("profileId");
-       
-         
-        navigate("/comment",{state : {profileId}});
-     
-        };
-    
-
+   
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const response = await axios.get(`http://localhost:5000/api/orders/orders/${userId}`);
-                setOrders(response.data.orders);
-
+                const response = await axios.get(`http://localhost:5000/api/orders/orders/user/${userId}`);
+                setOrders(response.data);
             } catch (error) {
                 console.error("Error fetching orders:", error);
             }
         };
-
         fetchOrders();
     }, []);
-    console.log(orders);
-    
+
+    const handleComment = (profileId) => {
+        navigate("/comment", { state: { profileId } });
+    };
+
+    // Function to map order status to a progress percentage
+    const getProgressPercentage = (status) => {
+        switch (status) {
+            case "Placed":
+                return 20;
+            case "In Progress":
+                return 50;
+            case "Shipped":
+                return 80;
+            case "Completed":
+                return 100;
+            default:
+                return 0;
+        }
+    };
+
     return (
         <>
             <WeSkillNavbar />
@@ -43,37 +52,38 @@ const OrdersPage = () => {
                         <p className="text-center text-muted">No orders placed yet.</p>
                     ) : (
                         orders.map((order) => (
-                            <div key={order.id} className="mb-4">
+                            <div key={order.orderId} className="mb-4">
                                 <Card className="shadow-sm border rounded-4 p-4 bg-light">
                                     <CardContent>
                                         <div className="d-flex justify-content-between align-items-center">
-                                            <h5 className="fw-bold mb-1">{order.title}</h5>
+                                            <h5 className="fw-bold mb-1">#{order.orderId}</h5>
                                             <span 
                                                 className={`badge ${order.status === "In Progress" ? "bg-warning text-dark" : "bg-success"}`}
                                             >
                                                 {order.status}
                                             </span>
                                         </div>
+
+                                        {/* ✅ Progress Bar Based on Order Status */}
                                         <div className="my-3">
                                             <ProgressBar 
-                                                now={(order.currentPhase / (order.phases.length - 1)) * 100} 
-                                                label={order.phases[order.currentPhase]} 
+                                                now={getProgressPercentage(order.status)} 
+                                                label={`${getProgressPercentage(order.status)}%`} 
                                                 className="mb-2"
                                             />
-                                            <div className="d-flex justify-content-between small text-muted">
-                                                {order.phases.map((phase, index) => (
-                                                    <span key={index} 
-                                                        className={index === order.currentPhase ? "fw-bold text-primary" : ""}
-                                                    >
-                                                        {phase}
-                                                    </span>
-                                                ))}
-                                            </div>
                                         </div>
-                                        <p className="text-muted mb-3">Assigned to: <strong>{order.userName}</strong></p>
+
+                                        <p className="text-muted mb-3">Assigned to: <strong>{order.profileName}</strong></p>
+                                        
                                         {order.status === "Completed" ? (
                                             <div className="d-flex gap-2">
-                                                <Button variant="outline-primary" className="w-20" onClick={handleComment}>📝 Comment</Button>
+                                                <Button 
+                                                    variant="outline-primary" 
+                                                    className="w-20" 
+                                                    onClick={() => handleComment(order.profileId)}
+                                                >
+                                                    📝 Comment
+                                                </Button>
                                                 <Button variant="outline-secondary" className="w-20">🔎 View Work</Button>
                                                 <a href={order.receiptUrl} download>
                                                     <Button variant="outline-success" className="w-20">💳 Download Receipt</Button>
@@ -84,7 +94,7 @@ const OrdersPage = () => {
                                                 <a href={order.receiptUrl} download>
                                                     <Button variant="outline-success" className="w-20 m-2">💳 Download Receipt</Button>
                                                 </a>
-                                                <Button variant="primary" className="w-20">💬 Chat with {order.userId}</Button>
+                                                <Button variant="primary" className="w-20">💬 Chat with {order.userName}</Button>
                                             </>
                                         )}
                                     </CardContent>

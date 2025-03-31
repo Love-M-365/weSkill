@@ -13,6 +13,7 @@ const ProfileDetails = () => {
   const [profile, setProfile] = useState(null);
   const [works, setWorks] = useState([]);
   const [pricingDetails, setPricingDetails] = useState([]);
+  const [comments,setComments]=useState([]);
   const location = useLocation();
   const { profileId } = location.state || {};
   let navigate=useNavigate();
@@ -22,6 +23,13 @@ const ProfileDetails = () => {
     setToast({ type, message });
     setTimeout(() => setToast(null), 3000);
   };
+  useEffect(() => {
+      if (profileId) {
+        axios.get(`http://localhost:5000/api/comments/comments/${profileId}`)
+          .then(response => setComments(response.data))
+          .catch(error => console.error('Error fetching comments:', error));
+      }
+    }, [profileId]);
   console.log(profileId)
   useEffect(() => {
     // Fetch Profile Details and Works
@@ -184,13 +192,25 @@ const ProfileDetails = () => {
       </div>
 
 
-          {/* Sample Works Section */}
-          <div className="mt-5">
-            <h4>Sample Works</h4>
-            <div className="d-flex gap-3">
-              
+      <div className="container-fluid bg-light py-5">
+      <div className="container">
+        <h3 className="text-primary border-bottom border-3 border-primary pb-2 mb-4">
+          Comments
+        </h3>
+        <div className="row">
+          {comments.map((comment) => (
+            <div key={comment._id} className="col-12 mb-3">
+              <div className="p-3 border-start border-4 border-primary bg-white rounded">
+                <p className="text-dark fs-5 mb-1">{comment.text}</p>
+                <small className="text-muted">
+                  {new Date(comment.createdAt).toLocaleString()}
+                </small>
+              </div>
             </div>
-          </div>
+          ))}
+        </div>
+      </div>
+    </div>
         </div>
       </div>
     </>
