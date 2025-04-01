@@ -18,44 +18,47 @@ const ProfileList = () => {
   };
   const fetchProfiles = async () => {
     try {
-        setLoading(true);
-        console.log(answers);
-        // Extract category correctly
-        const categoryValue = selectedField?.selectedField || selectedField || "Web Development";
+      setLoading(true);
+      console.log("Answers received:", answers);
 
-        // Extract answer from the 3rd question
-        const thirdQuestionAnswer = answers?.[0]; // Ensure answers object exists
+      // Extract category correctly
+      const categoryValue = selectedField?.name || "Web Development";
 
-        // Prepare filters object
-        const filters = {
-            category: categoryValue,
-            ...(thirdQuestionAnswer && {
-                badges: { $in: [thirdQuestionAnswer] }
-            }),
-            ...(Object.keys(answers || {}).length > 0 && { filters: answers }),
-        };
+      // Extract filter values
+      const filters = {
+        badges: answers["Job seeker traits"] ? [answers["Job seeker traits"]] : [],
+        technologyStack: answers["Technology Preference"]
+          ? answers["Technology Preference"].split(", ")
+          : [],
+        preferredWorkType: answers["What type of website do you need?"] || null,
+      };
 
-        console.log("Filters sent to API:", filters);
+      // Remove empty filter fields
+      Object.keys(filters).forEach((key) => {
+        if (!filters[key] || (Array.isArray(filters[key]) && filters[key].length === 0)) {
+          delete filters[key];
+        }
+      });
 
-        // API call
-        const response = await axios.post(
-            "http://localhost:5000/api/profiles/filter",
-            filters
-        );
+      const requestBody = { category: categoryValue, filters };
+      console.log("Filters sent to API:", requestBody);
 
-        console.log("Fetched profiles:", response.data);
-        setProfiles(response.data || []); 
+      // API call
+      const response = await axios.post("http://localhost:5000/api/profiles/filter", requestBody);
+      console.log("Fetched profiles:", response.data);
+
+      setProfiles(response.data || []);
     } catch (error) {
-        console.error("Error fetching profiles:", error);
-        setProfiles([]); 
+      console.error("Error fetching profiles:", error);
+      setProfiles([]);
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
-};
-useEffect(() => {
+  };
+
+  useEffect(() => {
     fetchProfiles();
   }, []);
-
   // Handle navigation between profiles
   const handleNextProfile = () => {
     if (currentIndex < profiles.length - 1) {
@@ -124,6 +127,9 @@ useEffect(() => {
               <span className="me-2">Rating:</span>
               {renderRatingStars(profile.rating || 0)}
             </div>
+            <button className= "btn btn-success">
+      Available
+    </button>
 
             {/* Display preferred work location */}
             <p className="text-muted mb-2">

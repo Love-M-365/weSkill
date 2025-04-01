@@ -158,7 +158,8 @@ exports.filterProfiles = async (req, res) => {
 
         // Build the query
         const query = {
-            additionalSkills: { $in: [categoryName] }, // Ensures category is within additionalSkills array
+            additionalSkills: { $in: [categoryName] }, 
+            
         };
 
         // Add additional filters if provided
@@ -175,7 +176,7 @@ exports.filterProfiles = async (req, res) => {
                 query.$and.push({ badges: { $in: filters.badges } });
             }
 
-            // Remove $and if it's empty
+          
             if (query.$and.length === 0) {
                 delete query.$and;
             }

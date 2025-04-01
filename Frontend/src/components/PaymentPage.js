@@ -10,7 +10,7 @@ const PaymentPage = () => {
 
 
   // Get UPI ID and payment details from props or query params
-  const { upiId = "ishmalikbps@oksbi", paymentAmount = 1, orderId = "order123" ,userId,profileId } =
+  const { upiId = "ishmalikbps@oksbi", paymentAmount = 1, orderId = "order123" ,userId,profileId ,userName , profileName } =
     location.state || {};
 
   const [isVerifying, setIsVerifying] = useState(false);
@@ -26,7 +26,8 @@ const PaymentPage = () => {
         navigate("/success",{
           state: {
             amount: 1,
-            orderId: "order123",
+            userName,
+            profileName,
             profileId,
             userId
           },

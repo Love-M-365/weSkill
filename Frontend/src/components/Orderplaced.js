@@ -1,24 +1,28 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import WeSkillNavbar from "./MainNavbar";
 
 const SuccessPage = () => {
   const location = useLocation();
-  const { userId, profileId, orderId, amount } = location.state || {};
+  const { userId, profileId, userName, profileName, amount } = location.state || {};
+  
+  const orderPlaced = useRef(false); // Track if order is already placed
 
   useEffect(() => {
-    if (userId && profileId && orderId && amount) {
+    if (!orderPlaced.current && userId && profileId && userName && profileName && amount) {
+      orderPlaced.current = true; // Set flag to prevent duplicate calls
       placeOrder();
     }
-  }, [userId, profileId, orderId, amount]);
+  }, [userId, profileId, userName, profileName, amount]);
 
   const placeOrder = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/api/place-order", {
+      const response = await axios.post("http://localhost:5000/api/orders/place-order", {
         userId,
         profileId,
-        orderId,
+        userName,
+        profileName,
         amount,
       });
 

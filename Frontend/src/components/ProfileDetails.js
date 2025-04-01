@@ -18,6 +18,8 @@ const ProfileDetails = () => {
   const { profileId } = location.state || {};
   let navigate=useNavigate();
   const userId =localStorage.getItem('userId');
+  const userName =localStorage.getItem('name');
+
 
   const showToast = (type, message) => {
     setToast({ type, message });
@@ -173,6 +175,8 @@ const ProfileDetails = () => {
                           paymentAmount: 1,
                           orderId: "order123",
                           profileId,
+                          profileName: `${profile.fullName}`,
+                          userName,
                           userId
                         },
                       })
