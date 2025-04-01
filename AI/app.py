@@ -5,7 +5,7 @@ import spacy
 app = Flask(__name__)
 
 # Load the sentiment model
-model = joblib.load("C:\\Users\\devma\\OneDrive\\Documents\\Desktop\\weSkill\\sentiment_model.pkl")
+model = joblib.load("C:\\Users\\Dakshyani Murari\\OneDrive\\Desktop\\weSkillGit\\weSkill\\sentiment_model.pkl")
 nlp = spacy.load("en_core_web_sm")
 
 # Synonym mapping
