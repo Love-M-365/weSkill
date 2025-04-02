@@ -150,20 +150,18 @@ exports.checkProfile = async (req, res) => {
 exports.filterProfiles = async (req, res) => {
     try {
         const { category, filters } = req.body;
-        console.log("Category:", category);
-        console.log("Filters:", filters);
+        console.log("Received Category:", category);
+        console.log("Received Filters:", filters);
 
-        // Extract category name if it's an object
-        const categoryName = typeof category === 'object' && category?.name ? category.name : category;
+        
+        const categoryName = typeof category === "string" ? category : "Web Development";
 
-        // Build the query
-        const query = {
-            additionalSkills: { $in: [categoryName] }, 
-            
-        };
 
-        // Add additional filters if provided
-        if (filters) {
+        // Base query: filter by category
+        const query = { additionalSkills: { $in: [categoryName] } };
+
+        // Apply filters only if they exist
+        if (filters && Object.keys(filters).length > 0) {
             query.$and = [];
 
             if (filters.primarySkills) {
@@ -176,7 +174,7 @@ exports.filterProfiles = async (req, res) => {
                 query.$and.push({ badges: { $in: filters.badges } });
             }
 
-          
+            // Remove $and if empty
             if (query.$and.length === 0) {
                 delete query.$and;
             }
@@ -187,7 +185,7 @@ exports.filterProfiles = async (req, res) => {
         // Fetch profiles
         const profiles = await Profile.find(query);
         if (!profiles.length) {
-            return res.status(404).json({ message: "No profiles found" });
+            return res.status(200).json([]); // Instead of 404, return empty array
         }
 
         res.status(200).json(profiles);
@@ -196,6 +194,7 @@ exports.filterProfiles = async (req, res) => {
         res.status(500).json({ message: "An error occurred", error: error.message });
     }
 };
+
 
 exports.getProfileById = async (req, res) => {
     const { id } = req.params; 

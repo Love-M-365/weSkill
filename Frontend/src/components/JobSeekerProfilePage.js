@@ -116,7 +116,7 @@ const JobSeekerDashboard = () => {
                         profile.badges.map((badge, index) => (
                           <span
                             key={index}
-                            className="badge bg-success text-light me-2 mb-2"
+                            className="badgeUI badgeUI-gold m-2"
                             style={{ padding: "10px", borderRadius: "8px" }}
                           >
                             {badge}

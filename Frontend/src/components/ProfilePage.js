@@ -10,43 +10,41 @@ const ProfileList = () => {
 
   const [profiles, setProfiles] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [currentIndex, setCurrentIndex] = useState(0); 
-
-  const { selectedField, answers } = location.state || {
-    selectedField: {  },
-    answers: {},
-  };
+  
+  // Extract state safely
+  const { selectedField, answers, skipFilters } = location.state || {};
+  console.log(selectedField);
   const fetchProfiles = async () => {
     try {
       setLoading(true);
       console.log("Answers received:", answers);
+      
+      const categoryValue = typeof selectedField === "string" ? selectedField : selectedField?.selectedField || "Web Development";
+      console.log(categoryValue);
+      
+      let filters = {};
+      if (!skipFilters && answers) {
+        filters = {
+          badges: answers["Job seeker traits"] ? [answers["Job seeker traits"]] : [],
+          technologyStack: answers["Technology Preference"]
+            ? answers["Technology Preference"].split(", ")
+            : [],
+          preferredWorkType: answers["What type of website do you need?"] || null,
+        };
 
-      // Extract category correctly
-      const categoryValue = selectedField?.name || "Web Development";
+        Object.keys(filters).forEach((key) => {
+          if (!filters[key] || (Array.isArray(filters[key]) && filters[key].length === 0)) {
+            delete filters[key];
+          }
+        });
+      }
 
-      // Extract filter values
-      const filters = {
-        badges: answers["Job seeker traits"] ? [answers["Job seeker traits"]] : [],
-        technologyStack: answers["Technology Preference"]
-          ? answers["Technology Preference"].split(", ")
-          : [],
-        preferredWorkType: answers["What type of website do you need?"] || null,
-      };
-
-      // Remove empty filter fields
-      Object.keys(filters).forEach((key) => {
-        if (!filters[key] || (Array.isArray(filters[key]) && filters[key].length === 0)) {
-          delete filters[key];
-        }
-      });
-
-      const requestBody = { category: categoryValue, filters };
+      const requestBody = skipFilters ? { category: categoryValue } : { category: categoryValue, filters };
       console.log("Filters sent to API:", requestBody);
-
-      // API call
+      
       const response = await axios.post("http://localhost:5000/api/profiles/filter", requestBody);
       console.log("Fetched profiles:", response.data);
-
+      
       setProfiles(response.data || []);
     } catch (error) {
       console.error("Error fetching profiles:", error);
@@ -59,24 +57,11 @@ const ProfileList = () => {
   useEffect(() => {
     fetchProfiles();
   }, []);
-  // Handle navigation between profiles
-  const handleNextProfile = () => {
-    if (currentIndex < profiles.length - 1) {
-      setCurrentIndex((prevIndex) => prevIndex + 1);
-    }
-  };
 
-  const handlePreviousProfile = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex((prevIndex) => prevIndex - 1);
-    }
-  };
   const handleProfileClick = (profile) => {
     navigate('/profile-details', { state: { profileId: profile._id , userId: profile.userId} });
   };
   
-
-  // Render rating stars
   const renderRatingStars = (rating) => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
@@ -99,65 +84,52 @@ const ProfileList = () => {
         <p>{selectedField?.description || "Explore some sample profiles to get started."}</p>
 
         {loading ? (
-  <p className="text-center">Loading profiles...</p>
-) : profiles.length > 0 ? (
-  <div className="list-group">
-    {profiles.map((profile, index) => (
-      <div
-        key={index}
-        className="list-group-item list-group-item-action shadow-sm p-3 mb-3 profile-card"
-        onClick={() => handleProfileClick(profile)}
-      >
-        <div className="d-flex align-items-center">
-          <div className="profile-pic me-3">
-            <FaUser className="text-white" size={40} />
+          <p className="text-center">Loading profiles...</p>
+        ) : profiles.length > 0 ? (
+          <div className="list-group">
+            {profiles.map((profile, index) => (
+              <div
+                key={index}
+                className="list-group-item list-group-item-action shadow-sm p-3 mb-3 profile-card"
+                onClick={() => handleProfileClick(profile)}
+              >
+                <div className="d-flex align-items-center">
+                  <div className="profile-pic me-3">
+                    <FaUser className="text-white" size={40} />
+                  </div>
+                  <div className="flex-grow-1">
+                    <h5 className="mb-1">{profile.fullName}</h5>
+                    <p className="text-muted mb-2" style={{ fontStyle: "italic" }}>
+                      {profile.bio || "No bio available"}
+                    </p>
+                    <div className="d-flex align-items-center text-muted mb-2">
+                      <FaBriefcase className="text-success me-1" size={18} />
+                      <span>{profile.typeOfWork || "N/A"}</span>
+                    </div>
+                    <div className="d-flex align-items-center mb-2">
+                      <span className="me-2">Rating:</span>
+                      {renderRatingStars(profile.rating || 0)}
+                    </div>
+                    <button  className="btn btn-outline-success">Available</button>
+                    <p className="text-muted mb-2">Preferred Work Location: {profile.preferredWorkLocation || "N/A"}</p>
+                    <div className="d-flex flex-wrap">
+                      <FaTags className="text-secondary me-2" size={18} />
+                      {profile.badges?.length > 0 ? (
+                        profile.badges.map((badge, i) => (
+                          <span key={i} className="badgeUI badgeUI-gold m-2">{badge}</span>
+                        ))
+                      ) : (
+                        <span className="text-muted">0 badges earned</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
-          <div className="flex-grow-1">
-            <h5 className="mb-1">{profile.fullName}</h5>
-            <p className="text-muted mb-2" style={{ fontStyle: "italic" }}>
-              {profile.bio || "No bio available"}
-            </p>
-            <div className="d-flex align-items-center text-muted mb-2">
-              <FaBriefcase className="text-success me-1" size={18} />
-              <span>{profile.typeOfWork || "N/A"}</span>
-            </div>
-
-            {/* Display ratings */}
-            <div className="d-flex align-items-center mb-2">
-              <span className="me-2">Rating:</span>
-              {renderRatingStars(profile.rating || 0)}
-            </div>
-            <button className= "btn btn-success">
-      Available
-    </button>
-
-            {/* Display preferred work location */}
-            <p className="text-muted mb-2">
-              Preferred Work Location: {profile.preferredWorkLocation || "N/A"}
-            </p>
-
-            {/* Display additional skills */}
-            <div className="d-flex flex-wrap">
-              <FaTags className="text-secondary me-2" size={18} />
-              {profile.badges?.length > 0 ? (
-                profile.badges.map((badge, i) => (
-                  <span key={i} className="badge bg-primary me-2 mb-1">
-                    {badge}
-                  </span>
-                ))
-              ) : (
-                <span className="text-muted">0 badges earned</span>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-    ))}
-  </div>
-) : (
-  <p className="text-center">No profiles found.</p>
-)}
-
+        ) : (
+          <p className="text-center">No profiles found.</p>
+        )}
 
         <style jsx>{`
           .profile-pic {
@@ -176,13 +148,6 @@ const ProfileList = () => {
           }
           .profile-card:hover {
             transform: scale(1.03);
-          }
-          h5 {
-            font-weight: bold;
-            margin: 0;
-          }
-          .text-muted {
-            font-size: 0.9rem;
           }
         `}</style>
       </div>

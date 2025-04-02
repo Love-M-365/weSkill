@@ -36,3 +36,63 @@
     transform: rotate(360deg);
   }
 }
+.badgeUI {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 30px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  position: relative;
+  overflow: hidden;
+  color: white;
+  transition: transform 0.2s ease, box-shadow 0.3s ease-in-out;
+}
+
+/* 🔥 Shiny Border Effect */
+.badgeUI::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.8), transparent, rgba(255, 255, 255, 0.8));
+  mask: linear-gradient(black, black) content-box, linear-gradient(black, black);
+  mask-composite: exclude;
+}
+
+.badgeUI:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+/* 🏆 badgeUI Variations */
+.badgeUI-gold {
+  background: linear-gradient(135deg, #FFD700, #FFB300);
+  color: black;
+}
+
+.badgeUI-silver {
+  background: linear-gradient(135deg, #C0C0C0, #A9A9A9);
+  color: black;
+}
+
+.badgeUI-bronze {
+  background: linear-gradient(135deg, #CD7F32, #8B4513);
+  color: black;
+}
+
+.badgeUI-platinum {
+  background: linear-gradient(135deg, #E5E4E2, #C0C0C0);
+  color: black;
+}
+
+.badgeUI-icon {
+  width: 20px;
+  height: 20px;
+  filter: drop-shadow(0px 2px 4px rgba(255, 255, 255, 0.3));
+}

@@ -37,31 +37,110 @@ const allQuestions = {
     },
   ],
   "Graphic Design": [
-    {
-      question: "What type of design work do you need?",
-      options: [
-        { label: "Logo Design" },
-        { label: "UI/UX Design" },
-        { label: "Social Media Graphics" },
-        { label: "Brand Identity" },
-        { label: "Other" },
-      ],
-    },
-  ],
+  {
+    "question": "What type of design do you need?",
+    "options": [
+      { "label": "Logo Design", "image": "" },
+      { "label": "Branding & Identity", "image": "" },
+      { "label": "Marketing Materials (Flyers, Brochures, etc.)", "image": "" },
+      { "label": "Website Graphics", "image": "" },
+      { "label": "Social Media Graphics", "image": "" },
+      { "label": "Other", "image": "" }
+    ]
+  },
+  {
+    "question": "Design style preference",
+    "options": [
+      { "label": "Minimalist" },
+      { "label": "Modern" },
+      { "label": "Vintage/Retro" },
+      { "label": "Abstract" },
+      { "label": "Illustrative" },
+      { "label": "No preference, need expert recommendation" }
+    ]
+  },
+  {
+    "question": "Preferred color palette",
+    "options": [
+      { "label": "Bright & Vibrant" },
+      { "label": "Muted & Neutral" },
+      { "label": "Monochrome" },
+      { "label": "Pastels" },
+      { "label": "No preference" }
+    ]
+  },
+  {
+    question: "Job seeker traits",
+    options: [
+      { label: "dedicated" },
+      { label: "punctual" },
+      { label: "Best work" },
+      { label: "budget friendly" },
+    ],
+  },
+],
+"Video Editing": [
+  {
+    "question": "What type of video do you need edited?",
+    "options": [
+      { "label": "YouTube Video", "image": "" },
+      { "label": "Social Media Reel/Shorts", "image": "" },
+      { "label": "Corporate/Business Video", "image": "" },
+      { "label": "Event Highlights", "image": "" },
+      { "label": "Music Video", "image": "" },
+      { "label": "Other", "image": "" }
+    ]
+  },
+  {
+    "question": "Editing Style Preference",
+    "options": [
+      { "label": "Cinematic & Professional" },
+      { "label": "Fast-Paced & Engaging" },
+      { "label": "Minimal & Clean" },
+      { "label": "VFX/Advanced Editing" },
+      { "label": "No preference, need expert recommendation" }
+    ]
+  },
+  {
+    "question": "Additional Features Needed",
+    "options": [
+      { "label": "Color Grading" },
+      { "label": "Motion Graphics & Animation" },
+      { "label": "Sound Design & Effects" },
+      { "label": "Subtitles & Captions" },
+      { "label": "Custom Intro/Outro" },
+      { "label": "No additional features" }
+    ]
+  },
+  {
+    "question": "Job seeker traits",
+    "options": [
+      { "label": "Creative & Innovative" },
+      { "label": "Fast Delivery" },
+      { "label": "Detail-Oriented" },
+      { "label": "Budget-Friendly" }
+    ]
+  }
+]
+
 };
 
 const Questionnaire = () => {
+  const location =useLocation();
+  const selectedField = location.state || {};
+  console.log(selectedField);
   const [serviceType, setServiceType] = useState("Web Development");
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState({});
   const [selectedOption, setSelectedOption] = useState(null);
   const navigate = useNavigate();
-
-  const questions = allQuestions[serviceType] || [];
-  const location =useLocation();
-  const selectedField = location.state || {};
+  const categoryValue = typeof selectedField === "string" ? selectedField : selectedField?.selectedField || "Web Development";
+   
+  const questions = allQuestions[categoryValue] || [];
+ 
+  const filters = {};
   const handleNext = () => {
-  
+    
 
     // Use functional updates to ensure the latest state
     setAnswers((prevAnswers) => ({
@@ -76,14 +155,15 @@ const Questionnaire = () => {
     } else {
       // Navigate after ensuring all answers are saved
       console.log("User Responses:", { ...answers, [questions[currentQuestion].question]: selectedOption });
-      navigate("/profilesDS", { state: { serviceType, answers: { ...answers, [questions[currentQuestion].question]: selectedOption } } });
+      navigate("/profilesDS", { state: { selectedField, answers: { ...answers, [questions[currentQuestion].question]: selectedOption } } });
     }
     
   };
-
   const handleSkip = () => {
-    navigate("/profiles",{state:{selectedField}});
-  };
+    navigate('/profiles', { state: { selectedField,filters, skipFilters: true } });
+    
+};
+
 
   return (
     <>
