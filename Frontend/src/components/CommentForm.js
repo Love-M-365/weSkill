@@ -14,7 +14,7 @@ const CommentPage = () => {
     console.log("Sending Data:", { profileId, text: comment }); // Log before sending
   
     try {
-      const response = await fetch("http://localhost:5000/api/comments/add", {
+      const response = await fetch("https://weskill.onrender.com/api/comments/add", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ profileId, text: comment }), // Ensure 'text' is used

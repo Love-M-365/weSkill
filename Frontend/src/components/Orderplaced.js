@@ -18,7 +18,7 @@ const SuccessPage = () => {
 
   const placeOrder = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/api/orders/place-order", {
+      const response = await axios.post("https://weskill.onrender.com/api/orders/place-order", {
         userId,
         profileId,
         userName,

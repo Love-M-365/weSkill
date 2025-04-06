@@ -19,7 +19,7 @@ const JobSeekerDashboard = () => {
     const fetchProfileAndWorks = async () => {
       try {
         const token = localStorage.getItem('token');
-        const profileResponse = await axios.get('http://localhost:5000/api/profiles/my-profile', {
+        const profileResponse = await axios.get('https://weskill.onrender.com/api/profiles/my-profile', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -30,7 +30,7 @@ const JobSeekerDashboard = () => {
           setProfile(userProfile);
 
           // Fetch works based on profile ID
-          const worksResponse = await axios.get(`http://localhost:5000/api/works/${userProfile._id}`, {
+          const worksResponse = await axios.get(`https://weskill.onrender.com/api/works/${userProfile._id}`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },

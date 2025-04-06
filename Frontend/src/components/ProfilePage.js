@@ -42,7 +42,7 @@ const ProfileList = () => {
       const requestBody = skipFilters ? { category: categoryValue } : { category: categoryValue, filters };
       console.log("Filters sent to API:", requestBody);
       
-      const response = await axios.post("http://localhost:5000/api/profiles/filter", requestBody);
+      const response = await axios.post("https://weskill.onrender.com/api/profiles/filter", requestBody);
       console.log("Fetched profiles:", response.data);
       
       setProfiles(response.data || []);
