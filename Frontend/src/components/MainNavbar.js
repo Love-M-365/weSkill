@@ -26,6 +26,10 @@ const WeSkillNavbar = () => {
       
     }
 };
+const handleLogout = () => {
+  localStorage.clear();
+  navigate('/');
+};
 
 
   return (
@@ -64,7 +68,7 @@ const WeSkillNavbar = () => {
               <NavDropdown.Item href="#view-profile">View Profile</NavDropdown.Item>
               <NavDropdown.Item href="#settings">Settings</NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item href="#logout">Logout</NavDropdown.Item>
+              <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
             </NavDropdown>
           </Nav>
         </Navbar.Collapse>

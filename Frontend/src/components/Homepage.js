@@ -7,11 +7,19 @@ import image4 from './photos/FeatureLeaderboard.jpg';
 import { Link } from 'react-router-dom';
 import Navbar from './Navbar';
 import weskill from './photos/weskillremovedbg.png'
-
+import img from './photos/img.jpg'
 
 export default function Homepage() {
   const [activeSection, setActiveSection] = useState('#home');
   const sections = useRef({});
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+useEffect(() => {
+  const handleResize = () => setIsMobile(window.innerWidth < 768);
+  window.addEventListener('resize', handleResize);
+  return () => window.removeEventListener('resize', handleResize);
+}, []);
+
 
   useEffect(() => {
     const handleScroll = () => {
@@ -36,8 +44,154 @@ export default function Homepage() {
   }, [activeSection]);
 
   return (
+    <>
+    {isMobile ?(
+      <div className="App">
+      {/* Navbar */}
+      <nav className="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div className="container-fluid">
+          <a className="navbar-brand" href="#">
+            <img src={weskill} style={{ maxHeight: '3rem' }} alt="Logo" />
+          </a>
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span className="navbar-toggler-icon"></span>
+          </button>
+          <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div className="navbar-nav">
+              <a className={`nav-link ${activeSection === '#home' ? 'active' : ''}`} href="#home">Home</a>
+              <a className={`nav-link ${activeSection === '#features' ? 'active' : ''}`} href="#features">Features</a>
+              <a className={`nav-link ${activeSection === '#about-us' ? 'active' : ''}`} href="#about-us">About Us</a>
+            </div>
+            <div className="ms-auto d-flex">
+              <Link to="/registerpage" className="btn btn-light mx-2">Register</Link>
+              <Link to="/loginpage" className="btn btn-dark text-white">Login &rarr;</Link>
+            </div>
+          </div>
+        </div>
+      </nav>
 
-    <div className="App">
+      {/* Hero Section */}
+      <section
+        ref={(el) => (sections.current['#home'] = el)}
+        id="home"
+        className="d-flex align-items-center min-vh-100 text-white"
+        style={{
+          backgroundImage: `url(${img})`,
+          backgroundPosition: 'center',
+          backgroundSize: 'cover',
+          backgroundRepeat: 'no-repeat',
+          borderRadius: '0.5rem',
+          padding: '2rem',
+      
+        }}
+      >
+        <div className="container">
+          <h1 style={{ fontFamily: 'Peralta', fontSize: '3rem' }}>Welcome to</h1>
+          <h1 style={{ fontFamily: 'Peralta', fontSize: '4rem', color: '#03C03C' }}>weSkill</h1>
+          <h3 className="my-3" style={{ fontFamily: 'BankGothic Lt BT', color: 'whitesmoke' }}>
+            Turning hobbies into Hustles
+          </h3>
+          <div className="card bg-transparent border-0" style={{ maxWidth: '100%' }}>
+            <div className="card-body p-0">
+              <p
+                className="card-text"
+                style={{
+                  fontFamily: 'Swis721 Ex BT',
+                  color: 'whitesmoke',
+                  fontSize: '1.1rem',
+                }}
+              >
+                Bridging the gap between talent and opportunity. Whether you're a freelancer ready to showcase your
+                skills or a job provider seeking the best, WeSkill makes connections effortless and efficient. Because
+                great work deserves to be found – and paid for!
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section
+        ref={(el) => (sections.current['#features'] = el)}
+        id="features"
+        className="container py-5"
+      >
+        <h2 className="text-center mb-5">Features</h2>
+        <div className="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+          {[
+  {
+    img: image1,
+    title: 'Explore Projects',
+    desc: 'A vibrant explore page where users can discover new opportunities, similar to Instagram\'s explore feed. Find projects that suit your interests and skills.',
+  },
+  {
+    img: image2,
+    title: 'Networking & Collaboration',
+    desc: 'Connect and collaborate with other skilled individuals. WeSkill helps you grow your network, form teams, and enhance your capabilities.',
+  },
+  {
+    img: image3,
+    title: 'Smart Notifications',
+    desc: 'Get real-time alerts for project updates, invitations, messages, and reviews. Stay updated with everything that matters to you.',
+  },
+  {
+    img: image4,
+    title: 'Gamified Leaderboard',
+    desc: 'See how you rank! Our AI assigns scores based on work quality, experience, and efficiency. Compete and climb the leaderboard!',
+  },
+  {
+    img: image2,
+    title: 'Skill Posting with Pricing',
+    desc: 'Job seekers can list their skills with descriptions and preferred pricing, making it easy for recruiters to find and hire talent.',
+  },
+  {
+    img: image3,
+    title: 'AI-Powered Evaluation',
+    desc: 'Our AI evaluates submissions based on quality, ensuring fair opportunities for both beginners and pros. Experience or efficiency—you decide.',
+  }
+].map((feature, index) => (
+  <div className="col" key={index}>
+    <div className="card h-100 shadow-sm border-0">
+      <img src={feature.img} className="card-img-top" alt={`Feature ${index + 1}`} />
+      <div className="card-body">
+        <h5 className="card-title">{feature.title}</h5>
+        <p className="card-text">{feature.desc}</p>
+      </div>
+    </div>
+  </div>
+))}
+    </div>
+    </section>
+    <section
+          ref={(el) => (sections.current['#about-us'] = el)}
+          id="about-us"
+          className="min-vh-100 bg-light d-flex flex-column justify-content-center align-items-center text-center"
+        >
+          <h2 className="display-4">About Us</h2>
+          <p className="lead">Learn more about us and what we do.</p>
+        </section>
+        <section
+          id="contact"
+          className="min-vh-100 bg-white d-flex flex-column justify-content-center align-items-center text-center"
+        >
+          <h2 className="display-4">Contact Us</h2>
+          <p className="lead">Get in touch with us!</p>
+        </section>
+      
+        <footer className="bg-dark text-white py-4 text-center">
+        <p>&copy; 2025 weSkill. All rights reserved.</p>
+      </footer>
+    </div>
+     ):(
+     <div className="App">
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
         <div className="container-fluid">
           <a className="navbar-brand" href="#">
@@ -258,5 +412,5 @@ export default function Homepage() {
       </footer>
     </div>
    
-  );
+ )}</>);
 }
