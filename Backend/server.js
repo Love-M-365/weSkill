@@ -17,7 +17,7 @@ connectDB();
 // Use CORS middleware
 app.use(
   cors({
-    origin: 'https://we-skill-lake.vercel.app/', // Allow requests from your frontend URL
+    origin: 'https://we-skill-lake.vercel.app', // Allow requests from your frontend URL
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
     credentials: true, // If using cookies or auth headers
   })
