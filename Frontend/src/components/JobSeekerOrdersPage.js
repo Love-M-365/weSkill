@@ -16,7 +16,7 @@ const JobSeekerProfile = () => {
   // ✅ Fetch orders using profileId
   useEffect(() => {
     if (profileId) {
-      axios.get(`https://weskill.onrender.com/api/orders/orders/profile/${profileId}`)
+      axios.get(`https://weskill-8iso.onrender.com/api/orders/orders/profile/${profileId}`)
         .then(response => setOrders(response.data))
         .catch(error => console.error('Error fetching orders:', error));
     }
@@ -26,7 +26,7 @@ const JobSeekerProfile = () => {
   // ✅ Fetch comments using profileId
   useEffect(() => {
     if (profileId) {
-      axios.get(`https://weskill.onrender.com/api/comments/comments/${profileId}`)
+      axios.get(`https://weskill-8iso.onrender.com/api/comments/comments/${profileId}`)
         .then(response => setComments(response.data))
         .catch(error => console.error('Error fetching comments:', error));
     }

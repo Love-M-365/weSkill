@@ -49,9 +49,6 @@ const App = () => {
           <Route path="/success" element={<SuccessPage />} />
           <Route path="/comment" element={<CommentForm />} />
           
-          
-
-          
         </Routes>
   
   );

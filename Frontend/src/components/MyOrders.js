@@ -13,7 +13,7 @@ const OrdersPage = () => {
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const response = await axios.get(`https://weskill.onrender.com/api/orders/orders/user/${userId}`);
+                const response = await axios.get(`https://weskill-8iso.onrender.com/api/orders/orders/user/${userId}`);
                 setOrders(response.data);
             } catch (error) {
                 console.error("Error fetching orders:", error);

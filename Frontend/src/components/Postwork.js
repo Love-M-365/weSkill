@@ -41,7 +41,7 @@ const PostWorkPage = () => {
     const dataToSubmit = { ...formData, profileId };
 
     try {
-      const response = await fetch("https://weskill.onrender.com/api/works/add", {
+      const response = await fetch("https://weskill-8iso.onrender.com/api/works/add", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

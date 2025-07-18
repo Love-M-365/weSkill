@@ -82,6 +82,7 @@ const ProfileSchema = new mongoose.Schema({
         userName: { type: String } 
     }
 ],
+   
   createdAt: {
     type: Date,
     default: Date.now,

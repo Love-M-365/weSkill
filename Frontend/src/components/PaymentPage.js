@@ -20,7 +20,7 @@ const PaymentPage = () => {
   const handlePaymentVerification = async () => {
     setIsVerifying(true);
     try {
-      const response = await fetch(`https://weskill.onrender.com/api/placeOrder/verify-payment/${orderId}`);
+      const response = await fetch(`https://weskill-8iso.onrender.com/api/placeOrder/verify-payment/${orderId}`);
       const data = await response.json();
       if (data.success) {
         navigate("/success",{

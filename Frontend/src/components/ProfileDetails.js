@@ -27,7 +27,7 @@ const ProfileDetails = () => {
   };
   useEffect(() => {
       if (profileId) {
-        axios.get(`https://weskill.onrender.com/api/comments/comments/${profileId}`)
+        axios.get(`https://weskill-8iso.onrender.com/api/comments/comments/${profileId}`)
           .then(response => setComments(response.data))
           .catch(error => console.error('Error fetching comments:', error));
       }
@@ -37,10 +37,10 @@ const ProfileDetails = () => {
     // Fetch Profile Details and Works
     const fetchProfileData = async () => {
       try {
-        const profileResponse = await axios.get(`https://weskill.onrender.com/api/profiles/${profileId}`);
+        const profileResponse = await axios.get(`https://weskill-8iso.onrender.com/api/profiles/${profileId}`);
         setProfile(profileResponse.data);
         console.log(profileResponse.data)
-        const worksResponse = await axios.get(`https://weskill.onrender.com/api/works/${profileId}`);
+        const worksResponse = await axios.get(`https://weskill-8iso.onrender.com/api/works/${profileId}`);
         setWorks(worksResponse.data);
         console.log(worksResponse.data)
         const pricing = worksResponse.data.map((work) => ({

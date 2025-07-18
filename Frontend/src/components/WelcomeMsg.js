@@ -24,7 +24,7 @@ export default function WelcomeMsg() {
                      Welcome to WeSkill!
                    </h2>
                    <p className="lead text-secondary mb-4" style={{ fontFamily: "'Open Sans', sans-serif" }}>
-                     We're excited to have you here. Let's get started with a quick questionnaire to help us understand your needs.
+                     We're excited to have you here. Let's get started
                    </p>
                    <Button className="bg-success mt-3 px-4 py-2" ><Link to="/dashboard" style={{ textDecoration: 'none', color: 'white' }} > Get Started</Link>
                      

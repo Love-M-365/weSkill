@@ -86,7 +86,7 @@ export default function JobSeekerQ() {
           console.log('Submitting data:', JSON.stringify(requestData, null, 2));
       
           const response = await axios.post(
-            'https://weskill.onrender.com/api/profiles/create',
+            'https://weskill-8iso.onrender.com/api/profiles/create',
             requestData,
             {
               headers: {
